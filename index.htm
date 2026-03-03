@@ -1,0 +1,4381 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أكاديمية المعرفة - منصة التعليم الذكية 📚</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --primary-light: #818cf8;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --success: #10b981;
+            --info: #3b82f6;
+            --warning: #f59e0b;
+            
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --bg-card: #ffffff;
+            --bg-modal: #ffffff;
+            --bg-sidebar: #f8fafc;
+            
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --text-tertiary: #9ca3af;
+            
+            --border-light: #e5e7eb;
+            --border-medium: #d1d5db;
+            
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.15);
+            --shadow-xl: 0 20px 40px rgba(0,0,0,0.2);
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-full: 9999px;
+            
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --primary: #818cf8;
+            --primary-dark: #6366f1;
+            --primary-light: #a5b4fc;
+            --secondary: #34d399;
+            --accent: #fbbf24;
+            --warning: #fbbf24;
+            
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --bg-modal: #1e293b;
+            --bg-sidebar: #0f172a;
+            
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-tertiary: #94a3b8;
+            
+            --border-light: #334155;
+            --border-medium: #475569;
+            
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.3);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.4);
+            --shadow-xl: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: var(--transition);
+            min-height: 100vh;
+        }
+
+        /* تحسين الشريط العلوي */
+        .main-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(var(--bg-primary-rgb), 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-light);
+            height: 70px;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-md);
+            animation: slideDown 0.5s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            font-weight: 900;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-lg);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        /* شريط التنقل المتحسن */
+        .main-nav {
+            display: flex;
+            gap: 4px;
+            flex: 1;
+            justify-content: center;
+        }
+
+        @media (max-width: 1024px) {
+            .main-nav {
+                display: none;
+            }
+            .mobile-menu-btn {
+                display: block !important;
+            }
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+        }
+
+        .mobile-menu-btn:hover {
+            background: var(--bg-secondary);
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item:hover {
+            color: var(--primary);
+            background: var(--bg-secondary);
+            transform: translateY(-2px);
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(16, 185, 129, 0.1));
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: var(--radius-full);
+        }
+
+        /* الأزرار المحسنة */
+        .btn {
+            padding: 12px 28px;
+            border-radius: var(--radius-md);
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: var(--transition-slow);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 2px solid var(--border-light);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #d97706);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.875rem;
+        }
+
+        .btn-lg {
+            padding: 16px 32px;
+            font-size: 1.1rem;
+        }
+
+        /* الأقسام المحسنة */
+        .section {
+            padding: 120px 24px;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .section {
+                padding: 80px 20px;
+            }
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 24px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            right: 0;
+            width: 80px;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: var(--radius-full);
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin-bottom: 60px;
+            line-height: 1.8;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        /* الهيرو المحسن */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 180px 24px 140px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-repeat: no-repeat;
+            background-position: bottom;
+            background-size: cover;
+            animation: wave 20s linear infinite;
+        }
+
+        @keyframes wave {
+            0% { background-position-x: 0; }
+            100% { background-position-x: 1440px; }
+        }
+
+        .hero-title {
+            font-size: 4.5rem;
+            font-weight: 900;
+            margin-bottom: 32px;
+            line-height: 1.1;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+            .hero {
+                padding: 140px 24px 100px;
+                min-height: auto;
+            }
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto 60px;
+            opacity: 0.95;
+            line-height: 1.8;
+        }
+
+        /* البطاقات المحسنة */
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-light);
+            padding: 32px;
+            transition: var(--transition);
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transform: translateX(100%);
+            transition: var(--transition);
+        }
+
+        .card:hover::before {
+            transform: translateX(0);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary-light);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .card-description {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            line-height: 1.7;
+        }
+
+        /* النظام الشبكي */
+        .grid {
+            display: grid;
+            gap: 30px;
+        }
+
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-4 { grid-template-columns: repeat(4, 1fr); }
+        .grid-auto { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+
+        @media (max-width: 1200px) {
+            .grid-4 { grid-template-columns: repeat(3, 1fr); }
+            .grid-3 { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .grid-4, 
+            .grid-3,
+            .grid-2 { 
+                grid-template-columns: 1fr; 
+            }
+        }
+
+        /* الشارات المحسنة */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 16px;
+            border-radius: var(--radius-full);
+            font-size: 0.8rem;
+            font-weight: 700;
+            transition: var(--transition);
+        }
+
+        .badge-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .badge-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-light);
+        }
+
+        .badge-success {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+        }
+
+        .badge-warning {
+            background: linear-gradient(135deg, var(--warning), #d97706);
+            color: white;
+        }
+
+        .badge-danger {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: white;
+        }
+
+        /* شريط التقدم المحسن */
+        .progress-bar {
+            height: 12px;
+            background: var(--border-light);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: var(--radius-full);
+            transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 30px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* القارئ الإلكتروني */
+        .ebook-reader {
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-light);
+        }
+
+        .ebook-toolbar {
+            padding: 20px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .ebook-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            background: var(--bg-primary);
+        }
+
+        .ebook-content h1, 
+        .ebook-content h2, 
+        .ebook-content h3 {
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+
+        .ebook-content p {
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+        }
+
+        /* المحادثة المحسنة */
+        .chat-container {
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 20px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .chat-message {
+            animation: messageIn 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            max-width: 80%;
+        }
+
+        @keyframes messageIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .user-message {
+            align-self: flex-start;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 16px 20px;
+            border-radius: 20px 20px 20px 5px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .ai-message {
+            align-self: flex-end;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            padding: 16px 20px;
+            border-radius: 20px 20px 5px 20px;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .ai-typing {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border-radius: 20px 20px 5px 20px;
+            align-self: flex-end;
+            border: 1px solid var(--border-light);
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dots span {
+            width: 8px;
+            height: 8px;
+            background: var(--text-tertiary);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        /* الآلة الحاسبة العلمية */
+        .scientific-calculator {
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            padding: 30px;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .calculator-display {
+            background: linear-gradient(135deg, #1f2937, #111827);
+            color: white;
+            padding: 20px;
+            border-radius: var(--radius-lg);
+            text-align: left;
+            font-family: 'Cairo', monospace;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            min-height: 80px;
+            word-break: break-all;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .calculator-history {
+            font-size: 1rem;
+            color: #9ca3af;
+            min-height: 24px;
+        }
+
+        .calculator-buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .calculator-buttons {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .calc-btn {
+            padding: 18px;
+            border: none;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border-radius: var(--radius-md);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Cairo', monospace;
+        }
+
+        .calc-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .calc-btn.operator {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .calc-btn.function {
+            background: linear-gradient(135deg, var(--warning), #d97706);
+            color: white;
+        }
+
+        .calc-btn.equals {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+            grid-column: span 2;
+        }
+
+        /* الشريط الجانبي */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: var(--bg-sidebar);
+            border-left: 1px solid var(--border-light);
+            z-index: 1001;
+            transition: var(--transition);
+            padding: 32px;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 90%;
+                right: -90%;
+            }
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        .sidebar-section {
+            margin-bottom: 40px;
+        }
+
+        .sidebar-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* النوافذ المنبثقة */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal.active {
+            display: flex;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--bg-modal);
+            border-radius: var(--radius-xl);
+            width: 100%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(30px);
+            transition: var(--transition);
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-light);
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 24px;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        /* الأزرار العائمة */
+        .floating-btns {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 999;
+        }
+
+        .floating-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-xl);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .floating-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+            border-radius: 50%;
+        }
+
+        .floating-btn:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .floating-btn:hover::after {
+            content: attr(title);
+            position: absolute;
+            left: -120px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            white-space: nowrap;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+        }
+
+        /* الإشعارات */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 24px;
+            background: var(--bg-card);
+            border-right: 4px solid var(--primary);
+            padding: 20px 24px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            z-index: 2000;
+            transform: translateX(120%);
+            transition: var(--transition);
+            max-width: 400px;
+            animation: notificationSlide 0.3s ease forwards;
+        }
+
+        @keyframes notificationSlide {
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            border-right-color: var(--success);
+        }
+
+        .notification.warning {
+            border-right-color: var(--warning);
+        }
+
+        .notification.error {
+            border-right-color: var(--danger);
+        }
+
+        .notification-icon {
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: var(--text-primary);
+        }
+
+        .notification-message {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* الفوتر المحسن */
+        .footer {
+            background: linear-gradient(135deg, #1f2937, #111827);
+            color: white;
+            padding: 80px 24px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 24px;
+            color: white;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .footer-bottom {
+            padding-top: 40px;
+            border-top: 1px solid #374151;
+            text-align: center;
+            color: #9ca3af;
+            font-size: 0.9rem;
+        }
+
+        /* محرر الكود التفاعلي */
+        .code-editor {
+            background: #0f172a;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #334155;
+        }
+
+        .code-toolbar {
+            padding: 16px;
+            background: #1e293b;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .code-area {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .code-line-numbers {
+            background: #0f172a;
+            color: #64748b;
+            padding: 16px;
+            font-family: 'Courier New', monospace;
+            text-align: right;
+            border-right: 1px solid #334155;
+            overflow-y: auto;
+            min-width: 60px;
+            user-select: none;
+        }
+
+        .code-input {
+            flex: 1;
+            background: transparent;
+            color: #e2e8f0;
+            border: none;
+            padding: 16px;
+            font-family: 'Cairo', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            resize: none;
+            outline: none;
+            tab-size: 4;
+        }
+
+        .code-output {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 16px;
+            font-family: 'Cairo', 'Courier New', monospace;
+            border-top: 1px solid #334155;
+            max-height: 200px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .code-output-item {
+            padding: 8px 12px;
+            border-radius: 4px;
+        }
+
+        .code-output-item.success {
+            border-right: 3px solid var(--success);
+        }
+
+        .code-output-item.error {
+            border-right: 3px solid var(--danger);
+        }
+
+        .code-output-item.info {
+            border-right: 3px solid var(--info);
+        }
+
+        /* السبورة الذكية */
+        .whiteboard {
+            background: white;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-light);
+        }
+
+        .whiteboard-tools {
+            padding: 16px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .whiteboard-canvas-container {
+            flex: 1;
+            position: relative;
+            background: white;
+            overflow: auto;
+        }
+
+        .whiteboard-canvas {
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+            display: block;
+        }
+
+        .whiteboard-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+        }
+
+        /* رسوميات التحليل */
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border: 1px solid var(--border-light);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-lg);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .stat-info h3 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .chart-container {
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            padding: 30px;
+            border: 1px solid var(--border-light);
+            margin-bottom: 40px;
+        }
+
+        /* تصميم الكورس - محسّن */
+        .course-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-image {
+            height: 200px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: var(--radius-lg);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-video-preview {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+
+        .video-thumbnail {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .play-button-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .course-video-preview:hover .play-button-overlay {
+            opacity: 1;
+        }
+
+        .course-video-preview:hover .video-thumbnail {
+            transform: scale(1.05);
+        }
+
+        .play-button {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .play-button:hover {
+            background: white;
+            transform: scale(1.1);
+        }
+
+        .course-rating {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.95);
+            padding: 6px 12px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 700;
+            color: var(--text-primary);
+            z-index: 2;
+        }
+
+        .course-level {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 2;
+        }
+
+        .course-video-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .video-duration {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .course-instructor {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .instructor-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+
+        /* تحسينات عامة */
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .slide-in-left {
+            opacity: 0;
+            transform: translateX(-30px);
+            animation: slideInLeft 0.6s ease forwards;
+        }
+
+        @keyframes slideInLeft {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .slide-in-right {
+            opacity: 0;
+            transform: translateX(30px);
+            animation: slideInRight 0.6s ease forwards;
+        }
+
+        @keyframes slideInRight {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .bounce-in {
+            opacity: 0;
+            transform: scale(0.9);
+            animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+        }
+
+        @keyframes bounceIn {
+            50% { transform: scale(1.05); }
+            to { 
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* تأثيرات الدخول */
+        [data-animate] {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        [data-animate].animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* تحسينات الطباعة */
+        @media print {
+            .main-header,
+            .floating-btns,
+            .footer {
+                display: none;
+            }
+            
+            .section {
+                padding: 20px 0;
+            }
+            
+            body {
+                background: white;
+                color: black;
+            }
+        }
+
+        /* شاشة التحميل */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-logo {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulse 2s infinite;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--border-light);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* القوائم المنسدلة */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--bg-card);
+            min-width: 200px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-light);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: var(--transition);
+            z-index: 1000;
+        }
+
+        .dropdown.active .dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: var(--transition);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background: var(--bg-secondary);
+            color: var(--primary);
+        }
+
+        /* التحميل التقدمي للصور */
+        .lazy-image {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .lazy-image.loaded {
+            opacity: 1;
+        }
+
+        /* فيديو المشغل */
+        .video-player-modal {
+            max-width: 1000px;
+        }
+
+        .video-player-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* نسبة 16:9 */
+            height: 0;
+            overflow: hidden;
+            border-radius: var(--radius-lg);
+            background: #000;
+        }
+
+        .video-player {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .video-info {
+            padding: 20px;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            margin-top: 20px;
+        }
+
+        .video-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* تخصيص شريط التمرير */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-full);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: var(--radius-full);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* تحسينات جديدة */
+        .course-modules {
+            margin-top: 20px;
+            padding: 15px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+        }
+
+        .module-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .module-item:last-child {
+            border-bottom: none;
+        }
+
+        .module-checkbox {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary);
+        }
+
+        .download-resources {
+            margin-top: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(16, 185, 129, 0.1));
+            border-radius: var(--radius-lg);
+        }
+    </style>
+</head>
+<body>
+    <!-- شاشة التحميل -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-logo">📚</div>
+        <div class="loading-spinner"></div>
+        <div style="margin-top: 20px; color: var(--text-secondary);">جاري تحميل أكاديمية المعرفة...</div>
+    </div>
+
+    <!-- شريط التنقل المحسن -->
+    <header class="main-header">
+        <a href="#home" class="logo">
+            <div class="logo-icon">📚</div>
+            <span>أكاديمية المعرفة</span>
+        </a>
+        
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <nav class="main-nav">
+            <div class="nav-item active" data-section="home">
+                <i class="fas fa-home"></i>
+                الرئيسية
+            </div>
+            <div class="nav-item" data-section="courses">
+                <i class="fas fa-graduation-cap"></i>
+                الدورات
+            </div>
+            <div class="nav-item" data-section="stats">
+                <i class="fas fa-chart-line"></i>
+                الإحصائيات
+            </div>
+            <div class="nav-item" data-section="tools">
+                <i class="fas fa-tools"></i>
+                الأدوات
+            </div>
+            <div class="nav-item" data-section="library">
+                <i class="fas fa-book"></i>
+                المكتبة
+            </div>
+            <div class="nav-item" data-section="ai">
+                <i class="fas fa-robot"></i>
+                المساعد الذكي
+            </div>
+            <div class="nav-item" data-section="community">
+                <i class="fas fa-users"></i>
+                المجتمع
+            </div>
+        </nav>
+        
+        <div class="header-actions" style="display: flex; gap: 12px; align-items: center;">
+            <button class="btn btn-secondary" id="themeToggle" title="تبديل الوضع">
+                <i class="fas fa-moon"></i>
+            </button>
+            
+            <div class="dropdown" id="userDropdown">
+                <button class="btn btn-primary" id="userBtn">
+                    <i class="fas fa-user"></i>
+                    <span>حسابي</span>
+                </button>
+                <div class="dropdown-content">
+                    <a href="#" class="dropdown-item" onclick="showProfile()">
+                        <i class="fas fa-id-card"></i>
+                        الملف الشخصي
+                    </a>
+                    <a href="#" class="dropdown-item" onclick="showAchievements()">
+                        <i class="fas fa-trophy"></i>
+                        الإنجازات
+                    </a>
+                    <a href="#" class="dropdown-item" onclick="showSettings()">
+                        <i class="fas fa-cog"></i>
+                        الإعدادات
+                    </a>
+                    <a href="#" class="dropdown-item" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        تسجيل الخروج
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- قائمة الجوال -->
+    <div class="sidebar" id="mobileMenu">
+        <div class="sidebar-header">
+            <h3>القائمة الرئيسية</h3>
+            <button class="btn btn-secondary" onclick="closeMobileMenu()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mobile-nav">
+            <a href="#home" class="dropdown-item active" onclick="navigateTo('home')">
+                <i class="fas fa-home"></i>
+                الرئيسية
+            </a>
+            <a href="#courses" class="dropdown-item" onclick="navigateTo('courses')">
+                <i class="fas fa-graduation-cap"></i>
+                الدورات
+            </a>
+            <a href="#stats" class="dropdown-item" onclick="navigateTo('stats')">
+                <i class="fas fa-chart-line"></i>
+                الإحصائيات
+            </a>
+            <a href="#tools" class="dropdown-item" onclick="navigateTo('tools')">
+                <i class="fas fa-tools"></i>
+                الأدوات
+            </a>
+            <a href="#library" class="dropdown-item" onclick="navigateTo('library')">
+                <i class="fas fa-book"></i>
+                المكتبة
+            </a>
+            <a href="#ai" class="dropdown-item" onclick="navigateTo('ai')">
+                <i class="fas fa-robot"></i>
+                المساعد الذكي
+            </a>
+            <a href="#community" class="dropdown-item" onclick="navigateTo('community')">
+                <i class="fas fa-users"></i>
+                المجتمع
+            </a>
+        </div>
+    </div>
+
+    <!-- المحتوى الرئيسي -->
+    <main id="mainContent">
+        <!-- قسم الهيرو -->
+        <section class="hero" id="homeSection">
+            <div class="container">
+                <h1 class="hero-title fade-in">رحلة التعلم الأكثر تطوراً تبدأ هنا</h1>
+                <p class="hero-subtitle fade-in" style="animation-delay: 0.2s;">
+                    انضم إلى أكاديمية المعرفة حيث تجتمع أحدث التقنيات مع أفضل المناهج التعليمية. أكثر من 5000 دورة، مكتبة رقمية شاملة، وأدوات ذكية لتحقيق أقصى استفادة.
+                </p>
+                <div class="hero-actions fade-in" style="animation-delay: 0.4s;">
+                    <button class="btn btn-primary btn-lg" onclick="startLearning()">
+                        <i class="fas fa-rocket"></i>
+                        ابدأ رحلتك مجاناً
+                    </button>
+                    <button class="btn btn-secondary btn-lg" onclick="showDemo()">
+                        <i class="fas fa-play-circle"></i>
+                        شاهد العرض التوضيحي
+                    </button>
+                </div>
+                
+                <div class="stats-cards" style="margin-top: 80px;">
+                    <div class="stat-card fade-in" style="animation-delay: 0.6s;">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>50,000+</h3>
+                            <p>طالب نشط</p>
+                        </div>
+                    </div>
+                    <div class="stat-card fade-in" style="animation-delay: 0.8s;">
+                        <div class="stat-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>5,000+</h3>
+                            <p>دورة تعليمية</p>
+                        </div>
+                    </div>
+                    <div class="stat-card fade-in" style="animation-delay: 1s;">
+                        <div class="stat-icon">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>200+</h3>
+                            <p>مدرب معتمد</p>
+                        </div>
+                    </div>
+                    <div class="stat-card fade-in" style="animation-delay: 1.2s;">
+                        <div class="stat-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>10,000+</h3>
+                            <p>مصدر تعليمي</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم الإحصائيات -->
+        <section class="section" id="statsSection" style="background: var(--bg-secondary);">
+            <div class="container">
+                <h2 class="section-title fade-in">📊 تقدمك التعليمي</h2>
+                <p class="section-subtitle fade-in">
+                    تتبع تقدمك وتحليل أدائك مع لوحة التحكم الذكية.
+                </p>
+                
+                <div class="chart-container fade-in">
+                    <canvas id="progressChart"></canvas>
+                </div>
+                
+                <div class="grid-3" id="statsGrid">
+                    <div class="card fade-in">
+                        <div class="card-header">
+                            <h3 class="card-title">الدورات المكتملة</h3>
+                            <span class="badge badge-success">+12%</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 20px;">
+                            <div style="font-size: 3rem; font-weight: 800; color: var(--primary);">8</div>
+                            <div style="flex: 1;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                    <span>التقدم الشهري</span>
+                                    <span>75%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 75%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card fade-in">
+                        <div class="card-header">
+                            <h3 class="card-title">ساعات التعلم</h3>
+                            <span class="badge badge-warning">+25%</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 20px;">
+                            <div style="font-size: 3rem; font-weight: 800; color: var(--secondary);">142</div>
+                            <div style="flex: 1;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                    <span>المتوسط اليومي</span>
+                                    <span>2.1 ساعة</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 65%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card fade-in">
+                        <div class="card-header">
+                            <h3 class="card-title">المهارات المتقنة</h3>
+                            <span class="badge badge-danger">جديد</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 20px;">
+                            <div style="font-size: 3rem; font-weight: 800; color: var(--accent);">15</div>
+                            <div>
+                                <div style="margin-bottom: 12px;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                        <small>أحدث المهارات:</small>
+                                    </div>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                        <span class="badge">Python</span>
+                                        <span class="badge">HTML/CSS</span>
+                                        <span class="badge">JavaScript</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم الدورات المحسن -->
+        <section class="section" id="coursesSection">
+            <div class="container">
+                <h2 class="section-title fade-in">🎓 الدورات المميزة</h2>
+                <p class="section-subtitle fade-in">
+                    اختر من بين أفضل الدورات المصممة خصيصاً لتناسب مسارك التعليمي مع محتوى فيديو تفاعلي.
+                </p>
+                
+                <div class="course-filters" style="margin-bottom: 40px; display: flex; gap: 12px; flex-wrap: wrap;">
+                    <button class="badge badge-primary active" onclick="filterCourses('all')">الكل</button>
+                    <button class="badge badge-secondary" onclick="filterCourses('programming')">البرمجة</button>
+                    <button class="badge badge-secondary" onclick="filterCourses('design')">التصميم</button>
+                    <button class="badge badge-secondary" onclick="filterCourses('business')">الأعمال</button>
+                    <button class="badge badge-secondary" onclick="filterCourses('language')">اللغات</button>
+                </div>
+                
+                <div class="grid-3" id="coursesGrid">
+                    <!-- سيتم ملؤها بالدورات -->
+                </div>
+                
+                <div style="text-align: center; margin-top: 60px;">
+                    <button class="btn btn-primary btn-lg" onclick="showAllCourses()">
+                        <i class="fas fa-book-open"></i>
+                        عرض جميع الدورات
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم الأدوات المحسن -->
+        <section class="section" id="toolsSection" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white;">
+            <div class="container">
+                <h2 class="section-title fade-in" style="color: white;">🛠️ أدوات التعلم الذكية</h2>
+                <p class="section-subtitle fade-in" style="color: rgba(255,255,255,0.9);">
+                    مجموعة متكاملة من الأدوات المصممة لتعزيز تجربة التعلم وتسهيل العملية التعليمية.
+                </p>
+                
+                <div class="grid-4" id="toolsGrid">
+                    <!-- سيتم ملؤها بالأدوات -->
+                </div>
+                
+                <div class="tool-features" style="margin-top: 80px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                    <div class="card fade-in" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);">
+                        <div style="text-align: center;">
+                            <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 2rem;">
+                                <i class="fas fa-sync-alt"></i>
+                            </div>
+                            <h3 style="color: white; margin-bottom: 12px;">تحديثات تلقائية</h3>
+                            <p style="color: rgba(255,255,255,0.9);">جميع الأدوات تتلقى تحديثات تلقائية باستمرار</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card fade-in" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);">
+                        <div style="text-align: center;">
+                            <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 2rem;">
+                                <i class="fas fa-cloud"></i>
+                            </div>
+                            <h3 style="color: white; margin-bottom: 12px;">حفظ سحابي</h3>
+                            <p style="color: rgba(255,255,255,0.9);">جميع أعمالك تحفظ تلقائياً على السحابة</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card fade-in" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);">
+                        <div style="text-align: center;">
+                            <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 2rem;">
+                                <i class="fas fa-share-alt"></i>
+                            </div>
+                            <h3 style="color: white; margin-bottom: 12px;">مشاركة سهلة</h3>
+                            <p style="color: rgba(255,255,255,0.9);">شارك أعمالك مع الآخرين بنقرة واحدة</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم المكتبة المحسن -->
+        <section class="section" id="librarySection">
+            <div class="container">
+                <h2 class="section-title fade-in">📖 مكتبتنا الرقمية</h2>
+                <p class="section-subtitle fade-in">
+                    مكتبة شاملة تضم آلاف المصادر التعليمية من كتب، أبحاث، ومقالات متخصصة.
+                </p>
+                
+                <div class="library-search" style="margin-bottom: 40px;">
+                    <div style="display: flex; gap: 12px; max-width: 600px; margin: 0 auto;">
+                        <input type="text" id="librarySearch" placeholder="ابحث في المكتبة..." 
+                               style="flex: 1; padding: 16px 20px; border: 2px solid var(--border-light); border-radius: var(--radius-lg); background: var(--bg-primary); color: var(--text-primary); font-size: 1rem;">
+                        <button class="btn btn-primary" onclick="searchLibrary()">
+                            <i class="fas fa-search"></i>
+                            بحث
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="ebook-reader fade-in">
+                    <div class="ebook-toolbar">
+                        <div style="display: flex; gap: 12px; align-items: center; flex: 1;">
+                            <button class="btn btn-secondary" onclick="prevChapter()">
+                                <i class="fas fa-chevron-right"></i>
+                                السابق
+                            </button>
+                            <span style="color: var(--text-primary); font-weight: 600;" id="chapterTitle">الفصل الأول</span>
+                            <button class="btn btn-secondary" onclick="nextChapter()">
+                                التالي
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                        </div>
+                        <div style="display: flex; gap: 12px;">
+                            <button class="btn btn-secondary" onclick="showBookIndex()">
+                                <i class="fas fa-list"></i>
+                                الفهرس
+                            </button>
+                            <button class="btn btn-secondary" onclick="toggleBookmark()">
+                                <i class="fas fa-bookmark"></i>
+                                إشارة
+                            </button>
+                            <button class="btn btn-secondary" onclick="changeFontSize(-1)">
+                                <i class="fas fa-font"></i>
+                                تصغير
+                            </button>
+                            <button class="btn btn-secondary" onclick="changeFontSize(1)">
+                                تكبير
+                                <i class="fas fa-font"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="ebook-content" id="ebookContent">
+                        <!-- محتوى الكتاب -->
+                    </div>
+                </div>
+                
+                <div class="library-books" style="margin-top: 60px;">
+                    <h3 style="margin-bottom: 30px; text-align: center;">كتب مقترحة</h3>
+                    <div class="grid-4" id="suggestedBooks">
+                        <!-- الكتب المقترحة -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم المساعد الذكي المحسن -->
+        <section class="section" id="aiSection" style="background: var(--bg-secondary);">
+            <div class="container">
+                <h2 class="section-title fade-in">🤖 مساعد التعلم الذكي</h2>
+                <p class="section-subtitle fade-in">
+                    مساعدك الشخصي المدعوم بالذكاء الاصطناعي. اطرح أي سؤال واحصل على إجابات فورية وشروحات مفصلة.
+                </p>
+                
+                <div class="grid-2" style="gap: 40px;">
+                    <div class="card fade-in">
+                        <div class="chat-container" id="chatContainer">
+                            <div class="chat-message ai-message">
+                                <div style="font-weight: 600; margin-bottom: 8px; color: var(--primary); display: flex; align-items: center; gap: 8px;">
+                                    <i class="fas fa-robot"></i>
+                                    مساعد التعلم:
+                                </div>
+                                <div>مرحباً! أنا مساعدك التعليمي الذكي. يمكنني مساعدتك في فهم المفاهيم، حل المشكلات، وتقديم شروحات مفصلة. كيف يمكنني مساعدتك اليوم؟</div>
+                            </div>
+                        </div>
+                        
+                        <div id="aiTyping" class="ai-typing" style="display: none;">
+                            <div class="typing-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <div style="color: var(--text-secondary); font-size: 0.9rem;">يكتب...</div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 12px; margin-top: 20px;">
+                            <input type="text" id="aiQuestion" placeholder="اطرح سؤالك هنا أو اختر من الأسئلة الشائعة..." 
+                                   style="flex: 1; padding: 16px 20px; border: 2px solid var(--border-light); border-radius: var(--radius-lg); background: var(--bg-primary); color: var(--text-primary); font-size: 1rem;"
+                                   onkeypress="if(event.key === 'Enter') askAIQuestion()">
+                            <button class="btn btn-primary" onclick="askAIQuestion()" style="padding: 16px 24px;">
+                                <i class="fas fa-paper-plane"></i>
+                                إرسال
+                            </button>
+                        </div>
+                        
+                        <div style="margin-top: 24px;">
+                            <div style="color: var(--text-secondary); margin-bottom: 12px; font-size: 0.9rem;">أسئلة مقترحة:</div>
+                            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                                <button class="badge badge-secondary" onclick="suggestQuestion('شرح مفهوم البرمجة الكائنية')">
+                                    البرمجة الكائنية
+                                </button>
+                                <button class="badge badge-secondary" onclick="suggestQuestion('كيف أتعلم اللغة الإنجليزية بسرعة؟')">
+                                    تعلم الإنجليزية
+                                </button>
+                                <button class="badge badge-secondary" onclick="suggestQuestion('شرح نظرية فيثاغورس')">
+                                    نظرية فيثاغورس
+                                </button>
+                                <button class="badge badge-secondary" onclick="suggestQuestion('أفضل طرق تعلم البرمجة للمبتدئين')">
+                                    برمجة للمبتدئين
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card fade-in">
+                        <h3 style="margin-bottom: 24px; color: var(--text-primary);">مميزات المساعد الذكي</h3>
+                        <div style="display: flex; flex-direction: column; gap: 20px;">
+                            <div style="display: flex; gap: 16px;">
+                                <div style="width: 40px; height: 40px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">
+                                    <i class="fas fa-bolt"></i>
+                                </div>
+                                <div>
+                                    <h4 style="margin-bottom: 6px;">ردود فورية</h4>
+                                    <p style="color: var(--text-secondary); font-size: 0.9rem;">احصل على إجابات فورية لأسئلتك في جميع المجالات</p>
+                                </div>
+                            </div>
+                            
+                            <div style="display: flex; gap: 16px;">
+                                <div style="width: 40px; height: 40px; background: var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">
+                                    <i class="fas fa-code"></i>
+                                </div>
+                                <div>
+                                    <h4 style="margin-bottom: 6px;">شروحات برمجية</h4>
+                                    <p style="color: var(--text-secondary); font-size: 0.9rem;">فهم وشرح أكواد برمجية مع أمثلة عملية</p>
+                                </div>
+                            </div>
+                            
+                            <div style="display: flex; gap: 16px;">
+                                <div style="width: 40px; height: 40px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">
+                                    <i class="fas fa-language"></i>
+                                </div>
+                                <div>
+                                    <h4 style="margin-bottom: 6px;">دعم متعدد اللغات</h4>
+                                    <p style="color: var(--text-secondary); font-size: 0.9rem;">تواصل باللغة العربية والإنجليزية</p>
+                                </div>
+                            </div>
+                            
+                            <div style="display: flex; gap: 16px;">
+                                <div style="width: 40px; height: 40px; background: var(--info); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">
+                                    <i class="fas fa-history"></i>
+                                </div>
+                                <div>
+                                    <h4 style="margin-bottom: 6px;">سجل المحادثات</h4>
+                                    <p style="color: var(--text-secondary); font-size: 0.9rem;">احفظ وعُد إلى محادثاتك السابقة في أي وقت</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 30px; padding: 20px; background: var(--bg-secondary); border-radius: var(--radius-lg);">
+                            <h4 style="margin-bottom: 12px; color: var(--text-primary);">نصائح للاستخدام الأمثل</h4>
+                            <ul style="color: var(--text-secondary); padding-right: 20px; font-size: 0.9rem;">
+                                <li style="margin-bottom: 8px;">كن محدداً في سؤالك للحصول على إجابة دقيقة</li>
+                                <li style="margin-bottom: 8px;">اطلب أمثلة عملية لفهم أفضل</li>
+                                <li style="margin-bottom: 8px;">استخدم المصطلحات الصحيحة للحصول على إجابات متخصصة</li>
+                                <li>اطلب شرح المفاهيم الصعبة بطرق مبسطة</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم المجتمع -->
+        <section class="section" id="communitySection">
+            <div class="container">
+                <h2 class="section-title fade-in">👥 مجتمع التعلم</h2>
+                <p class="section-subtitle fade-in">
+                    انضم إلى مجتمعنا النشط من المتعلمين وشارك معرفتك مع الآخرين.
+                </p>
+                
+                <div class="grid-3" style="gap: 30px; margin-bottom: 60px;">
+                    <div class="card fade-in">
+                        <div style="text-align: center; padding: 30px;">
+                            <div style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 2rem;">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <h3 style="font-size: 1.3rem; font-weight: 800; margin-bottom: 12px;">منتديات النقاش</h3>
+                            <p style="color: var(--text-secondary); margin-bottom: 24px;">شارك في النقاشات التعليمية واطرح أسئلتك</p>
+                            <button class="btn btn-primary" onclick="openForums()">
+                                <i class="fas fa-external-link-alt"></i>
+                                زيارة المنتديات
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="card fade-in">
+                        <div style="text-align: center; padding: 30px;">
+                            <div style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--secondary), #059669); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 2rem;">
+                                <i class="fas fa-user-graduate"></i>
+                            </div>
+                            <h3 style="font-size: 1.3rem; font-weight: 800; margin-bottom: 12px;">مجموعات الدراسة</h3>
+                            <p style="color: var(--text-secondary); margin-bottom: 24px;">انضم إلى مجموعات الدراسة المتخصصة</p>
+                            <button class="btn btn-primary" onclick="openStudyGroups()">
+                                <i class="fas fa-users"></i>
+                                عرض المجموعات
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="card fade-in">
+                        <div style="text-align: center; padding: 30px;">
+                            <div style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--accent), #d97706); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 2rem;">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <h3 style="font-size: 1.3rem; font-weight: 800; margin-bottom: 12px;">التحديات</h3>
+                            <p style="color: var(--text-secondary); margin-bottom: 24px;">شارك في تحديات التعلم واكسب الجوائز</p>
+                            <button class="btn btn-primary" onclick="openChallenges()">
+                                <i class="fas fa-flag"></i>
+                                عرض التحديات
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- شريط التعلم الجانبي -->
+    <aside class="sidebar" id="learningSidebar">
+        <div class="sidebar-header">
+            <h3>🎯 لوحة التعلم الشخصية</h3>
+            <button class="btn btn-secondary" onclick="closeSidebar()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3><i class="fas fa-chart-line"></i> تقدمك اليومي</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" id="dailyProgress" style="width: 50%"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 12px;">
+                <span id="progressText" style="font-weight: 600; color: var(--primary);">50% مكتمل</span>
+                <span id="timeText" style="color: var(--text-secondary);">30/60 دقيقة</span>
+            </div>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3><i class="fas fa-tasks"></i> مهام اليوم</h3>
+            <div id="dailyTasks">
+                <!-- المهام اليومية -->
+            </div>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3><i class="fas fa-trophy"></i> الإنجازات الحديثة</h3>
+            <div id="recentAchievements">
+                <!-- الإنجازات -->
+            </div>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3><i class="fas fa-clock"></i> الجدول الزمني</h3>
+            <div id="studySchedule">
+                <!-- الجدول الزمني -->
+            </div>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3><i class="fas fa-fire"></i> متتالية التعلم</h3>
+            <div style="text-align: center; padding: 20px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: var(--radius-lg); color: white;">
+                <div style="font-size: 2.5rem; font-weight: 800; margin-bottom: 8px;" id="streakDays">7</div>
+                <div>يوم متتالي</div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- الفوتر المحسن -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h3>أكاديمية المعرفة</h3>
+                    <p style="color: #9ca3af; margin-bottom: 20px; line-height: 1.7;">
+                        منصة تعليمية شاملة تجمع بين أحدث التقنيات وأفضل المحتوى التعليمي لتحقيق تجربة تعلم فريدة.
+                    </p>
+                    <div style="display: flex; gap: 16px;">
+                        <a href="#" style="color: #9ca3af; font-size: 1.2rem;" title="فيسبوك">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="#" style="color: #9ca3af; font-size: 1.2rem;" title="تويتر">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" style="color: #9ca3af; font-size: 1.2rem;" title="يوتيوب">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="#" style="color: #9ca3af; font-size: 1.2rem;" title="لينكدإن">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>التعلم</h3>
+                    <ul class="footer-links">
+                        <li><a href="#" onclick="navigateTo('courses')"><i class="fas fa-chevron-left"></i> جميع الدورات</a></li>
+                        <li><a href="#" onclick="navigateTo('stats')"><i class="fas fa-chevron-left"></i> التقارير والإحصائيات</a></li>
+                        <li><a href="#" onclick="showCertificates()"><i class="fas fa-chevron-left"></i> الشهادات</a></li>
+                        <li><a href="#" onclick="openProjects()"><i class="fas fa-chevron-left"></i> المشاريع العملية</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>المصادر</h3>
+                    <ul class="footer-links">
+                        <li><a href="#" onclick="navigateTo('library')"><i class="fas fa-chevron-left"></i> المكتبة الرقمية</a></li>
+                        <li><a href="#" onclick="navigateTo('tools')"><i class="fas fa-chevron-left"></i> أدوات التعلم</a></li>
+                        <li><a href="#" onclick="openResearch()"><i class="fas fa-chevron-left"></i> الأبحاث العلمية</a></li>
+                        <li><a href="#" onclick="openBlog()"><i class="fas fa-chevron-left"></i> المدونة التعليمية</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>الدعم</h3>
+                    <ul class="footer-links">
+                        <li><a href="#" onclick="openHelpCenter()"><i class="fas fa-chevron-left"></i> مركز المساعدة</a></li>
+                        <li><a href="#" onclick="openFAQ()"><i class="fas fa-chevron-left"></i> الأسئلة الشائعة</a></li>
+                        <li><a href="#" onclick="openContact()"><i class="fas fa-chevron-left"></i> اتصل بنا</a></li>
+                        <li><a href="#" onclick="openFeedback()"><i class="fas fa-chevron-left"></i> تقديم اقتراح</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>© 2024 أكاديمية المعرفة. جميع الحقوق محفوظة.</p>
+                <p style="margin-top: 8px; font-size: 0.8rem;">
+                    <a href="#" style="color: #9ca3af; text-decoration: none;" onclick="openPrivacy()">سياسة الخصوصية</a> | 
+                    <a href="#" style="color: #9ca3af; text-decoration: none;" onclick="openTerms()">شروط الاستخدام</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- الأزرار العائمة -->
+    <div class="floating-btns">
+        <button class="floating-btn" onclick="openSidebar()" title="لوحة التعلم">
+            <i class="fas fa-chart-line"></i>
+        </button>
+        <button class="floating-btn" onclick="openNotePad()" title="المفكرة الذكية">
+            <i class="fas fa-sticky-note"></i>
+        </button>
+        <button class="floating-btn" onclick="openCalculator()" title="آلة حاسبة علمية">
+            <i class="fas fa-calculator"></i>
+        </button>
+        <button class="floating-btn" onclick="openCodeEditor()" title="محرر الكود">
+            <i class="fas fa-code"></i>
+        </button>
+        <button class="floating-btn" onclick="scrollToTop()" title="انتقل للأعلى">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+    </div>
+
+    <!-- النوافذ المنبثقة -->
+
+    <!-- المفكرة الذكية -->
+    <div class="modal" id="notePadModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📝 المفكرة الذكية</h3>
+                <button class="btn btn-secondary" onclick="closeModal('notePadModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="notePadEditor" style="min-height: 400px;"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="saveNote()">
+                    <i class="fas fa-save"></i>
+                    حفظ الملاحظة
+                </button>
+                <button class="btn btn-secondary" onclick="exportNote()">
+                    <i class="fas fa-download"></i>
+                    تصدير كـ PDF
+                </button>
+                <button class="btn btn-secondary" onclick="shareNote()">
+                    <i class="fas fa-share"></i>
+                    مشاركة
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- الآلة الحاسبة العلمية -->
+    <div class="modal" id="calculatorModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🧮 الآلة الحاسبة العلمية</h3>
+                <button class="btn btn-secondary" onclick="closeModal('calculatorModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="scientific-calculator">
+                    <div class="calculator-display">
+                        <div class="calculator-history" id="calcHistory"></div>
+                        <div id="calcDisplay">0</div>
+                    </div>
+                    <div class="calculator-buttons" id="calcButtons"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- محرر الكود -->
+    <div class="modal" id="codeEditorModal">
+        <div class="modal-content" style="max-width: 1000px;">
+            <div class="modal-header">
+                <h3>💻 محرر الكود التفاعلي</h3>
+                <button class="btn btn-secondary" onclick="closeModal('codeEditorModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="code-editor">
+                    <div class="code-toolbar">
+                        <select id="codeLanguage" onchange="changeLanguage()" style="padding: 10px 16px; border-radius: var(--radius-md); background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-light); min-width: 150px;">
+                            <option value="javascript">JavaScript</option>
+                            <option value="python">Python</option>
+                            <option value="html">HTML</option>
+                            <option value="css">CSS</option>
+                            <option value="java">Java</option>
+                            <option value="php">PHP</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="runCode()">
+                            <i class="fas fa-play"></i>
+                            تشغيل الكود
+                        </button>
+                        <button class="btn btn-secondary" onclick="formatCode()">
+                            <i class="fas fa-indent"></i>
+                            تنسيق
+                        </button>
+                        <button class="btn btn-secondary" onclick="clearCode()">
+                            <i class="fas fa-trash"></i>
+                            مسح
+                        </button>
+                        <button class="btn btn-secondary" onclick="saveCode()">
+                            <i class="fas fa-save"></i>
+                            حفظ
+                        </button>
+                        <button class="btn btn-secondary" onclick="shareCode()">
+                            <i class="fas fa-share"></i>
+                            مشاركة
+                        </button>
+                    </div>
+                    <div class="code-area">
+                        <div class="code-line-numbers" id="lineNumbers">1</div>
+                        <textarea class="code-input" id="codeInput" placeholder="اكتب كودك هنا..." spellcheck="false"></textarea>
+                    </div>
+                    <div class="code-output" id="codeOutput">
+                        <div style="color: #94a3b8; padding: 16px;">المخرجات ستظهر هنا...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- السبورة الذكية -->
+    <div class="modal" id="whiteboardModal">
+        <div class="modal-content" style="max-width: 1200px;">
+            <div class="modal-header">
+                <h3>🖼️ السبورة الذكية</h3>
+                <button class="btn btn-secondary" onclick="closeModal('whiteboardModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="whiteboard">
+                    <div class="whiteboard-tools">
+                        <button class="btn btn-primary" onclick="setTool('pen')" id="penTool">
+                            <i class="fas fa-pen"></i>
+                            قلم
+                        </button>
+                        <button class="btn btn-secondary" onclick="setTool('eraser')" id="eraserTool">
+                            <i class="fas fa-eraser"></i>
+                            ممحاة
+                        </button>
+                        <button class="btn btn-secondary" onclick="setTool('line')" id="lineTool">
+                            <i class="fas fa-slash"></i>
+                            خط
+                        </button>
+                        <button class="btn btn-secondary" onclick="setTool('rectangle')" id="rectangleTool">
+                            <i class="fas fa-square"></i>
+                            مستطيل
+                        </button>
+                        <button class="btn btn-secondary" onclick="setTool('circle')" id="circleTool">
+                            <i class="fas fa-circle"></i>
+                            دائرة
+                        </button>
+                        <button class="btn btn-secondary" onclick="setTool('text')" id="textTool">
+                            <i class="fas fa-font"></i>
+                            نص
+                        </button>
+                        <input type="color" id="colorPicker" onchange="changeColor(this.value)" value="#000000" style="width: 60px; height: 40px; border-radius: var(--radius-sm); border: 2px solid var(--border-light); cursor: pointer;">
+                        <input type="range" id="brushSize" min="1" max="50" value="3" onchange="changeBrushSize(this.value)" style="width: 120px;">
+                        <span style="color: var(--text-primary); font-size: 0.9rem;" id="brushSizeLabel">3px</span>
+                        <button class="btn btn-danger" onclick="clearWhiteboard()">
+                            <i class="fas fa-trash"></i>
+                            مسح الكل
+                        </button>
+                        <button class="btn btn-success" onclick="saveWhiteboard()">
+                            <i class="fas fa-save"></i>
+                            حفظ
+                        </button>
+                    </div>
+                    <div class="whiteboard-canvas-container">
+                        <div class="whiteboard-grid"></div>
+                        <canvas id="whiteboardCanvas" class="whiteboard-canvas"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة ملف المستخدم -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3>👤 الملف الشخصي</h3>
+                <button class="btn btn-secondary" onclick="closeModal('profileModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="grid-2" style="gap: 30px;">
+                    <div>
+                        <div class="card">
+                            <div style="text-align: center; padding: 30px;">
+                                <div style="width: 120px; height: 120px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 3rem; font-weight: 700;">
+                                    <span id="userInitials">م</span>
+                                </div>
+                                <h3 style="margin-bottom: 10px;" id="userName">مستخدم جديد</h3>
+                                <p style="color: var(--text-secondary); margin-bottom: 20px;" id="userEmail">user@example.com</p>
+                                <div class="badge badge-primary" id="userLevel">مبتدئ</div>
+                            </div>
+                        </div>
+                        
+                        <div class="card" style="margin-top: 20px;">
+                            <h4 style="margin-bottom: 20px;">نقاط الإنجاز</h4>
+                            <div style="text-align: center;">
+                                <div style="font-size: 3rem; font-weight: 800; color: var(--primary);" id="userPoints">100</div>
+                                <div style="color: var(--text-secondary);">نقطة</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="card">
+                            <h4 style="margin-bottom: 20px;">الإحصائيات الشخصية</h4>
+                            <div style="display: flex; flex-direction: column; gap: 15px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span>عدد الدورات المسجلة</span>
+                                    <span class="badge badge-primary">8</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span>ساعات التعلم</span>
+                                    <span class="badge badge-success">142 ساعة</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span>مستوى المشاركة</span>
+                                    <span class="badge badge-warning">نشط</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span>تاريخ الانضمام</span>
+                                    <span id="joinDate" style="color: var(--text-secondary);">2024-01-01</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card" style="margin-top: 20px;">
+                            <h4 style="margin-bottom: 20px;">المهارات الرئيسية</h4>
+                            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                                <span class="badge badge-secondary">Python</span>
+                                <span class="badge badge-secondary">HTML/CSS</span>
+                                <span class="badge badge-secondary">JavaScript</span>
+                                <span class="badge badge-secondary">تصميم UI/UX</span>
+                                <span class="badge badge-secondary">اللغة الإنجليزية</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة مشغل الفيديو -->
+    <div class="modal" id="videoPlayerModal">
+        <div class="modal-content video-player-modal" style="max-width: 1000px;">
+            <div class="modal-header">
+                <h3 id="videoPlayerTitle">🎬 مشغل الفيديو التعليمي</h3>
+                <button class="btn btn-secondary" onclick="closeModal('videoPlayerModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="video-player-container">
+                    <iframe class="video-player" id="courseVideoPlayer" 
+                            src="" 
+                            title="مشغل الفيديو التعليمي" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                    </iframe>
+                </div>
+                <div class="video-info">
+                    <div class="video-meta">
+                        <div id="videoCourseInfo">
+                            <h4 style="margin-bottom: 5px;" id="videoTitle"></h4>
+                            <p style="color: var(--text-secondary); margin: 0;" id="videoInstructor"></p>
+                        </div>
+                        <div id="videoDurationBadge" class="badge badge-primary">
+                            <i class="fas fa-clock"></i> <span id="videoDurationText">00:00</span>
+                        </div>
+                    </div>
+                    <div class="course-modules">
+                        <h5 style="margin-bottom: 15px; color: var(--text-primary);">
+                            <i class="fas fa-list-ol"></i> محتوى الدورة
+                        </h5>
+                        <div id="courseModulesList">
+                            <!-- قائمة الفيديوهات والدروس -->
+                        </div>
+                    </div>
+                    <div class="download-resources">
+                        <h5 style="margin-bottom: 15px; color: var(--primary);">
+                            <i class="fas fa-download"></i> مصادر للتحميل
+                        </h5>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button class="btn btn-secondary btn-sm" onclick="downloadPDF()">
+                                <i class="fas fa-file-pdf"></i> PDF الملخص
+                            </button>
+                            <button class="btn btn-secondary btn-sm" onclick="downloadCode()">
+                                <i class="fas fa-code"></i> ملفات الكود
+                            </button>
+                            <button class="btn btn-secondary btn-sm" onclick="downloadSlides()">
+                                <i class="fas fa-images"></i> الشرائح
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة الإنجازات -->
+    <div class="modal" id="achievementsModal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3>🏆 الإنجازات</h3>
+                <button class="btn btn-secondary" onclick="closeModal('achievementsModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="grid-2" id="achievementsList">
+                    <!-- الإنجازات -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // نظام التعلم المتطور - نسخة مبسطة
+        // ============================================
+
+        // تعريف الكائن الرئيسي
+        const LearningSystem = {
+            // البيانات الأساسية
+            currentUser: null,
+            courses: [],
+            tools: [],
+            books: [],
+            dailyTasks: [],
+            achievements: [],
+            chart: null,
+            editor: null,
+            canvas: null,
+            ctx: null,
+            drawing: false,
+            currentTool: 'pen',
+            
+            // تهيئة النظام
+            init() {
+                console.log('🚀 نظام التعلم المتطور يبدأ العمل...');
+                
+                // إخفاء شاشة التحميل بعد ثانيتين
+                setTimeout(() => {
+                    document.getElementById('loadingScreen').style.opacity = '0';
+                    setTimeout(() => {
+                        document.getElementById('loadingScreen').style.display = 'none';
+                    }, 500);
+                }, 2000);
+                
+                // تهيئة المستخدم
+                this.setupUser();
+                
+                // تهيئة الثيم
+                this.setupTheme();
+                
+                // إعداد مستمعي الأحداث
+                this.setupEventListeners();
+                
+                // تحميل البيانات
+                this.loadCourses();
+                this.loadTools();
+                this.loadBooks();
+                this.loadDailyTasks();
+                this.loadAchievements();
+                
+                // إعداد المخططات
+                this.setupCharts();
+                
+                // إعداد الأدوات
+                this.setupCalculator();
+                this.setupWhiteboard();
+                this.setupEbook();
+                
+                // عرض البيانات
+                this.renderCourses();
+                this.renderTools();
+                this.renderBooks();
+                this.renderTasks();
+                this.renderAchievements();
+                this.updateUserProfile();
+                
+                // بدء تأثيرات الدخول
+                this.setupAnimations();
+                
+                console.log('✅ النظام جاهز!');
+            },
+            
+            // إعداد المستخدم
+            setupUser() {
+                const savedUser = localStorage.getItem('learningUser');
+                if (savedUser) {
+                    this.currentUser = JSON.parse(savedUser);
+                } else {
+                    this.currentUser = {
+                        id: 1,
+                        name: 'مستخدم جديد',
+                        email: 'user@example.com',
+                        level: 'مبتدئ',
+                        points: 100,
+                        streak: 7,
+                        joinDate: '2024-01-01'
+                    };
+                    localStorage.setItem('learningUser', JSON.stringify(this.currentUser));
+                }
+                
+                // تحديث واجهة المستخدم
+                this.updateStreak();
+            },
+            
+            // تحديث ملف المستخدم
+            updateUserProfile() {
+                if (this.currentUser) {
+                    const nameElement = document.getElementById('userName');
+                    const emailElement = document.getElementById('userEmail');
+                    const levelElement = document.getElementById('userLevel');
+                    const pointsElement = document.getElementById('userPoints');
+                    const initialsElement = document.getElementById('userInitials');
+                    const joinDateElement = document.getElementById('joinDate');
+                    
+                    if (nameElement) nameElement.textContent = this.currentUser.name;
+                    if (emailElement) emailElement.textContent = this.currentUser.email;
+                    if (levelElement) levelElement.textContent = this.currentUser.level;
+                    if (pointsElement) pointsElement.textContent = this.currentUser.points;
+                    if (initialsElement) initialsElement.textContent = this.currentUser.name.split(' ').map(n => n[0]).join('');
+                    if (joinDateElement) joinDateElement.textContent = this.currentUser.joinDate;
+                }
+            },
+            
+            // إعداد الثيم
+            setupTheme() {
+                const savedTheme = localStorage.getItem('theme') || 'light';
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                this.updateThemeButton(savedTheme);
+            },
+            
+            toggleTheme() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                
+                this.updateThemeButton(newTheme);
+                this.showNotification(`تم تفعيل الوضع ${newTheme === 'dark' ? 'الليلي' : 'النهاري'}`, 'success');
+            },
+            
+            updateThemeButton(theme) {
+                const btn = document.getElementById('themeToggle');
+                if (btn) {
+                    btn.innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+                }
+            },
+            
+            // إعداد مستمعي الأحداث
+            setupEventListeners() {
+                // تبديل الثيم
+                document.getElementById('themeToggle').addEventListener('click', () => this.toggleTheme());
+                
+                // قائمة الجوال
+                document.getElementById('mobileMenuBtn').addEventListener('click', () => this.openMobileMenu());
+                
+                // التنقل
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        const section = e.currentTarget.dataset.section;
+                        this.navigateTo(section);
+                    });
+                });
+                
+                // القائمة المنسدلة للمستخدم
+                const userBtn = document.getElementById('userBtn');
+                if (userBtn) {
+                    userBtn.addEventListener('click', () => {
+                        document.getElementById('userDropdown').classList.toggle('active');
+                    });
+                }
+                
+                // إغلاق القوائم عند النقر خارجها
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.dropdown')) {
+                        document.querySelectorAll('.dropdown').forEach(dropdown => {
+                            dropdown.classList.remove('active');
+                        });
+                    }
+                    
+                    // إغلاق القائمة الجوالية
+                    if (!e.target.closest('.sidebar') && !e.target.closest('.mobile-menu-btn')) {
+                        this.closeMobileMenu();
+                    }
+                });
+                
+                // تحديث أرقام الأسطر في محرر الكود
+                const codeInput = document.getElementById('codeInput');
+                if (codeInput) {
+                    codeInput.addEventListener('input', () => this.updateLineNumbers());
+                }
+                
+                // التمرير السلس للروابط
+                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                    anchor.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const targetId = this.getAttribute('href');
+                        if (targetId === '#') return;
+                        
+                        const targetElement = document.querySelector(targetId);
+                        if (targetElement) {
+                            window.scrollTo({
+                                top: targetElement.offsetTop - 80,
+                                behavior: 'smooth'
+                            });
+                        }
+                    });
+                });
+                
+                // إغلاق النوافذ عند النقر خارجها
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.addEventListener('click', (e) => {
+                        if (e.target === modal) {
+                            modal.classList.remove('active');
+                        }
+                    });
+                });
+            },
+            
+            // التنقل بين الأقسام
+            navigateTo(section) {
+                // إغلاق القوائم
+                this.closeMobileMenu();
+                document.querySelectorAll('.dropdown').forEach(dropdown => {
+                    dropdown.classList.remove('active');
+                });
+                
+                // تحديث التنقل النشط
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.classList.remove('active');
+                    if (item.dataset.section === section) {
+                        item.classList.add('active');
+                    }
+                });
+                
+                // التمرير للقسم
+                const targetSection = document.getElementById(`${section}Section`);
+                if (targetSection) {
+                    window.scrollTo({
+                        top: targetSection.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            },
+            
+            // قائمة الجوال
+            openMobileMenu() {
+                document.getElementById('mobileMenu').classList.add('active');
+            },
+            
+            closeMobileMenu() {
+                document.getElementById('mobileMenu').classList.remove('active');
+            },
+            
+            // تحميل الدورات
+            loadCourses() {
+                this.courses = [
+                    {
+                        id: 1,
+                        title: "تعلم البرمجة من الصفر",
+                        category: "programming",
+                        level: "مبتدئ",
+                        description: "ابدأ رحلتك في عالم البرمجة مع دورة شاملة تغطي الأساسيات والمفاهيم المتقدمة",
+                        instructor: "أحمد محمد",
+                        duration: "45 ساعة",
+                        students: 12500,
+                        rating: 4.8,
+                        price: 0,
+                        progress: 65,
+                        videoUrl: "https://www.youtube.com/embed/rfscVS0vtbw",
+                        videoDuration: "6:30",
+                        modules: [
+                            { title: "مقدمة في البرمجة", duration: "45:30", completed: true },
+                            { title: "أساسيات Python", duration: "1:20:15", completed: true },
+                            { title: "هياكل البيانات", duration: "2:15:40", completed: false },
+                            { title: "مشروع عملي", duration: "1:45:10", completed: false }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        title: "احتراف تصميم الواجهات",
+                        category: "design",
+                        level: "متوسط",
+                        description: "تصميم واجهات مستخدم جذابة وسهلة الاستخدام باستخدام أحدث الأدوات",
+                        instructor: "سارة علي",
+                        duration: "30 ساعة",
+                        students: 8500,
+                        rating: 4.9,
+                        price: 49,
+                        progress: 30,
+                        videoUrl: "https://www.youtube.com/embed/8KaJRw-rfn8",
+                        videoDuration: "4:15",
+                        modules: [
+                            { title: "مقدمة في UI/UX", duration: "35:20", completed: true },
+                            { title: "أساسيات Figma", duration: "1:10:45", completed: true },
+                            { title: "تصميم واجهات متقدمة", duration: "1:45:30", completed: false },
+                            { title: "بناء نظام تصميم", duration: "1:30:15", completed: false }
+                        ]
+                    },
+                    {
+                        id: 3,
+                        title: "التسويق الرقمي المتكامل",
+                        category: "business",
+                        level: "متقدم",
+                        description: "إتقان استراتيجيات التسويق الرقمي وتحليل البيانات لتحقيق النجاح",
+                        instructor: "محمد خالد",
+                        duration: "60 ساعة",
+                        students: 9200,
+                        rating: 4.7,
+                        price: 79,
+                        progress: 0,
+                        videoUrl: "https://www.youtube.com/embed/8KaJRw-rfn8",
+                        videoDuration: "5:20",
+                        modules: [
+                            { title: "أساسيات التسويق الرقمي", duration: "50:30", completed: false },
+                            { title: "تحسين محركات البحث", duration: "2:15:20", completed: false },
+                            { title: "التسويق عبر وسائل التواصل", duration: "1:40:45", completed: false },
+                            { title: "تحليل البيانات", duration: "1:35:10", completed: false }
+                        ]
+                    },
+                    {
+                        id: 4,
+                        title: "اللغة الإنجليزية للمحترفين",
+                        category: "language",
+                        level: "جميع المستويات",
+                        description: "تطوير مهارات اللغة الإنجليزية للعمل والدراسة والحياة اليومية",
+                        instructor: "ليزا جونسون",
+                        duration: "40 ساعة",
+                        students: 18500,
+                        rating: 4.9,
+                        price: 0,
+                        progress: 0,
+                        videoUrl: "https://www.youtube.com/embed/8KaJRw-rfn8",
+                        videoDuration: "3:45",
+                        modules: [
+                            { title: "المحادثة اليومية", duration: "40:15", completed: false },
+                            { title: "الإنجليزية للأعمال", duration: "1:30:45", completed: false },
+                            { title: "قواعد متقدمة", duration: "1:20:30", completed: false },
+                            { title: "الكتابة المهنية", duration: "1:15:10", completed: false }
+                        ]
+                    }
+                ];
+            },
+            
+            // عرض الدورات
+            renderCourses(filter = 'all') {
+                const grid = document.getElementById('coursesGrid');
+                if (!grid) return;
+                
+                let coursesToShow = this.courses;
+                if (filter !== 'all') {
+                    coursesToShow = this.courses.filter(course => course.category === filter);
+                }
+                
+                grid.innerHTML = coursesToShow.map(course => `
+                    <div class="card course-card fade-in">
+                        <div class="course-image">
+                            <div class="course-video-preview" onclick="openCourseVideo(${course.id})">
+                                <div class="video-thumbnail" style="background: linear-gradient(135deg, ${this.getCategoryColor(course.category)});"></div>
+                                <div class="play-button-overlay">
+                                    <div class="play-button">
+                                        <i class="fas fa-play"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="course-rating">
+                                <i class="fas fa-star" style="color: #f59e0b;"></i>
+                                ${course.rating}
+                            </div>
+                            <div class="course-level">
+                                <span class="badge ${course.level === 'مبتدئ' ? 'badge-success' : course.level === 'متوسط' ? 'badge-warning' : 'badge-danger'}">
+                                    ${course.level}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 16px;">
+                            <span class="badge ${course.category === 'programming' ? 'badge-primary' : course.category === 'design' ? 'badge-warning' : course.category === 'business' ? 'badge-success' : 'badge-info'}">
+                                ${this.getCategoryName(course.category)}
+                            </span>
+                            <span class="badge ${course.price === 0 ? 'badge-success' : 'badge-secondary'} float-left">
+                                ${course.price === 0 ? 'مجاني' : `${course.price} $`}
+                            </span>
+                        </div>
+                        
+                        <h3 class="card-title">${course.title}</h3>
+                        <p class="card-description">${course.description}</p>
+                        
+                        <div class="course-instructor">
+                            <div class="instructor-avatar">
+                                ${course.instructor.split(' ').map(n => n[0]).join('')}
+                            </div>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600;">${course.instructor}</div>
+                                <div style="font-size: 0.875rem; color: var(--text-secondary);">
+                                    <i class="fas fa-clock"></i> ${course.duration} | 
+                                    <i class="fas fa-users"></i> ${course.students.toLocaleString()}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        ${course.progress > 0 ? `
+                            <div style="margin-top: 20px;">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${course.progress}%"></div>
+                                </div>
+                                <div style="text-align: center; margin-top: 8px;">
+                                    <span style="font-size: 0.875rem; color: var(--primary); font-weight: 600;">
+                                        ${course.progress}% مكتمل
+                                    </span>
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        <div style="display: flex; gap: 10px; margin-top: 20px;">
+                            <button class="btn ${course.progress > 0 ? 'btn-secondary' : 'btn-primary'}" 
+                                    style="flex: 1;" 
+                                    onclick="enrollCourse(${course.id})">
+                                <i class="fas ${course.progress > 0 ? 'fa-play-circle' : 'fa-plus'}"></i>
+                                ${course.progress > 0 ? 'استمر في التعلم' : 'اشترك الآن'}
+                            </button>
+                            <button class="btn btn-secondary" onclick="openCourseVideo(${course.id})" title="معاينة">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            },
+            
+            getCategoryColor(category) {
+                const colors = {
+                    'programming': '#4f46e5, #8b5cf6',
+                    'design': '#f59e0b, #f97316',
+                    'business': '#10b981, #34d399',
+                    'language': '#3b82f6, #60a5fa'
+                };
+                return colors[category] || '#4f46e5, #8b5cf6';
+            },
+            
+            getCategoryName(category) {
+                const names = {
+                    'programming': 'برمجة',
+                    'design': 'تصميم',
+                    'business': 'أعمال',
+                    'language': 'لغات'
+                };
+                return names[category] || category;
+            },
+            
+            // فتح فيديو الدورة
+            openCourseVideo(courseId) {
+                const course = this.courses.find(c => c.id === courseId);
+                if (!course) return;
+                
+                document.getElementById('videoPlayerTitle').textContent = `🎬 ${course.title}`;
+                document.getElementById('videoTitle').textContent = course.title;
+                document.getElementById('videoInstructor').textContent = `مقدم من: ${course.instructor}`;
+                document.getElementById('videoDurationText').textContent = course.videoDuration;
+                
+                const videoPlayer = document.getElementById('courseVideoPlayer');
+                videoPlayer.src = course.videoUrl;
+                
+                // عرض قائمة المحتوى
+                this.renderCourseModules(course.modules);
+                
+                // فتح النافذة
+                this.openModal('videoPlayerModal');
+                this.showNotification(`جاري تشغيل فيديو: ${course.title}`, 'success');
+            },
+            
+            // عرض محتوى الدورة
+            renderCourseModules(modules) {
+                const container = document.getElementById('courseModulesList');
+                if (!container) return;
+                
+                container.innerHTML = modules.map((module, index) => `
+                    <div class="module-item">
+                        <input type="checkbox" class="module-checkbox" ${module.completed ? 'checked' : ''} 
+                               onchange="toggleModuleCompletion(${index}, this.checked)">
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600;">${index + 1}. ${module.title}</div>
+                            <div style="font-size: 0.875rem; color: var(--text-secondary);">
+                                <i class="fas fa-clock"></i> ${module.duration}
+                            </div>
+                        </div>
+                        ${module.completed ? 
+                            '<span class="badge badge-success" style="font-size: 0.7rem;">مكتمل</span>' : 
+                            '<span class="badge badge-secondary" style="font-size: 0.7rem;">غير مكتمل</span>'}
+                    </div>
+                `).join('');
+            },
+            
+            // تحميل الأدوات
+            loadTools() {
+                this.tools = [
+                    {
+                        id: 1,
+                        name: "محرر الكود التفاعلي",
+                        icon: "fas fa-code",
+                        description: "اكتب وشغل الكود مباشرة في المتصفح مع دعم متعدد اللغات",
+                        color: "#4f46e5"
+                    },
+                    {
+                        id: 2,
+                        name: "السبورة الذكية",
+                        icon: "fas fa-chalkboard",
+                        description: "ارسم وخطط وشارك أفكارك مع الآخرين في الوقت الحقيقي",
+                        color: "#10b981"
+                    },
+                    {
+                        id: 3,
+                        name: "المفكرة الذكية",
+                        icon: "fas fa-sticky-note",
+                        description: "دون ملاحظاتك ونظم أفكارك مع دعم التنسيق المتقدم",
+                        color: "#f59e0b"
+                    },
+                    {
+                        id: 4,
+                        name: "آلة حاسبة علمية",
+                        icon: "fas fa-calculator",
+                        description: "أجر حساباتك الرياضية المتقدمة والتحليل الإحصائي",
+                        color: "#ef4444"
+                    }
+                ];
+            },
+            
+            // عرض الأدوات
+            renderTools() {
+                const grid = document.getElementById('toolsGrid');
+                if (!grid) return;
+                
+                grid.innerHTML = this.tools.map(tool => `
+                    <div class="card fade-in">
+                        <div style="text-align: center; padding: 30px;">
+                            <div style="width: 80px; height: 80px; background: ${tool.color}; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 2rem;">
+                                <i class="${tool.icon}"></i>
+                            </div>
+                            <h3 style="font-size: 1.3rem; font-weight: 800; margin-bottom: 12px; color: white;">
+                                ${tool.name}
+                            </h3>
+                            <p style="color: rgba(255,255,255,0.9); margin-bottom: 24px; line-height: 1.6;">${tool.description}</p>
+                            <button class="btn" style="background: rgba(255,255,255,0.2); color: white; border-color: rgba(255,255,255,0.3);" onclick="openTool(${tool.id})">
+                                <i class="fas fa-external-link-alt"></i>
+                                فتح الأداة
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            },
+            
+            // تحميل الكتب
+            loadBooks() {
+                this.books = [
+                    {
+                        id: 1,
+                        title: "مقدمة في علوم الكمبيوتر",
+                        author: "د. أحمد محمد",
+                        category: "تكنولوجيا",
+                        pages: 350,
+                        rating: 4.7,
+                        color: "#4f46e5"
+                    },
+                    {
+                        id: 2,
+                        title: "تعلم اللغة الإنجليزية في 30 يوم",
+                        author: "ليزا جونسون",
+                        category: "لغات",
+                        pages: 280,
+                        rating: 4.8,
+                        color: "#10b981"
+                    },
+                    {
+                        id: 3,
+                        title: "أساسيات التسويق الرقمي",
+                        author: "محمد خالد",
+                        category: "أعمال",
+                        pages: 320,
+                        rating: 4.6,
+                        color: "#f59e0b"
+                    },
+                    {
+                        id: 4,
+                        title: "الرياضيات المتقدمة",
+                        author: "د. سعيد عمر",
+                        category: "علوم",
+                        pages: 450,
+                        rating: 4.9,
+                        color: "#3b82f6"
+                    }
+                ];
+            },
+            
+            // عرض الكتب
+            renderBooks() {
+                const container = document.getElementById('suggestedBooks');
+                if (!container) return;
+                
+                container.innerHTML = this.books.map(book => `
+                    <div class="card fade-in">
+                        <div style="background: ${book.color}; height: 120px; border-radius: var(--radius-lg); margin-bottom: 20px; position: relative;">
+                            <div style="position: absolute; bottom: -20px; right: 20px; width: 60px; height: 80px; background: white; border-radius: 4px; box-shadow: var(--shadow-md); display: flex; align-items: center; justify-content: center; color: ${book.color}; font-size: 1.5rem;">
+                                <i class="fas fa-book"></i>
+                            </div>
+                        </div>
+                        
+                        <h3 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 8px;">${book.title}</h3>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 12px;">
+                            <i class="fas fa-user"></i> ${book.author}
+                        </p>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span class="badge badge-secondary">${book.category}</span>
+                            <div style="display: flex; align-items: center; gap: 4px;">
+                                <i class="fas fa-star" style="color: #f59e0b; font-size: 0.8rem;"></i>
+                                <span style="font-size: 0.875rem;">${book.rating}</span>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-secondary" style="width: 100%; margin-top: 20px;" onclick="openBook(${book.id})">
+                            <i class="fas fa-book-open"></i>
+                            قراءة
+                        </button>
+                    </div>
+                `).join('');
+            },
+            
+            // تحميل المهام
+            loadDailyTasks() {
+                this.dailyTasks = [
+                    { 
+                        id: 1, 
+                        title: "مشاهدة درس جديد في البرمجة", 
+                        completed: true, 
+                        points: 20,
+                        time: "30 دقيقة",
+                        priority: "high"
+                    },
+                    { 
+                        id: 2, 
+                        title: "حل 5 تمارين برمجة", 
+                        completed: true, 
+                        points: 30,
+                        time: "45 دقيقة",
+                        priority: "medium"
+                    },
+                    { 
+                        id: 3, 
+                        title: "قراءة فصل من كتاب علوم الكمبيوتر", 
+                        completed: false, 
+                        points: 15,
+                        time: "20 دقيقة",
+                        priority: "low"
+                    },
+                    { 
+                        id: 4, 
+                        title: "مشاهدة فيديو تعليمي عن الذكاء الاصطناعي", 
+                        completed: false, 
+                        points: 25,
+                        time: "40 دقيقة",
+                        priority: "medium"
+                    }
+                ];
+            },
+            
+            // عرض المهام
+            renderTasks() {
+                const container = document.getElementById('dailyTasks');
+                if (!container) return;
+                
+                container.innerHTML = this.dailyTasks.map(task => `
+                    <div style="display: flex; align-items: center; gap: 12px; padding: 15px; background: var(--bg-card); border-radius: var(--radius-md); margin-bottom: 10px; border: 1px solid var(--border-light);">
+                        <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${task.id})" 
+                               style="width: 20px; height: 20px; cursor: pointer; accent-color: var(--primary);">
+                        <div style="flex: 1;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                <span style="${task.completed ? 'text-decoration: line-through; color: var(--text-tertiary);' : 'font-weight: 600; color: var(--text-primary);'}">
+                                    ${task.title}
+                                </span>
+                                <span style="font-size: 0.8rem; color: ${task.priority === 'high' ? 'var(--danger)' : task.priority === 'medium' ? 'var(--warning)' : 'var(--success)'};">
+                                    <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
+                                </span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-secondary);">
+                                <span><i class="fas fa-clock"></i> ${task.time}</span>
+                                <span><i class="fas fa-star" style="color: var(--accent);"></i> +${task.points}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            },
+            
+            // تحميل الإنجازات
+            loadAchievements() {
+                this.achievements = [
+                    { 
+                        id: 1, 
+                        title: "المتعلم النشط", 
+                        description: "7 أيام متتالية من التعلم", 
+                        earned: true, 
+                        icon: "🏆",
+                        date: "2024-01-15"
+                    },
+                    { 
+                        id: 2, 
+                        title: "مبرمج مبتدئ", 
+                        description: "إنهاء دورة أساسيات البرمجة", 
+                        earned: true, 
+                        icon: "💻",
+                        date: "2024-01-10"
+                    },
+                    { 
+                        id: 3, 
+                        title: "قارئ متعطش", 
+                        description: "قراءة 10 فصول من الكتب التعليمية", 
+                        earned: false, 
+                        icon: "📚",
+                        progress: 7
+                    },
+                    { 
+                        id: 4, 
+                        title: "صاحب التحدي", 
+                        description: "إكمال 3 تحديات برمجية", 
+                        earned: true, 
+                        icon: "⚡",
+                        date: "2024-01-12"
+                    }
+                ];
+            },
+            
+            // عرض الإنجازات
+            renderAchievements() {
+                const container = document.getElementById('recentAchievements');
+                if (!container) return;
+                
+                const recent = this.achievements.filter(a => a.earned).slice(0, 3);
+                container.innerHTML = recent.map(achievement => `
+                    <div style="display: flex; align-items: center; gap: 15px; padding: 15px; background: var(--bg-card); border-radius: var(--radius-md); margin-bottom: 10px; border: 1px solid var(--border-light);">
+                        <div style="font-size: 2rem;">${achievement.icon}</div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 700; margin-bottom: 4px; color: var(--text-primary);">${achievement.title}</div>
+                            <div style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 4px;">${achievement.description}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-tertiary);">
+                                <i class="fas fa-calendar"></i> ${achievement.date}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            },
+            
+            // عرض جميع الإنجازات
+            renderAllAchievements() {
+                const container = document.getElementById('achievementsList');
+                if (!container) return;
+                
+                container.innerHTML = this.achievements.map(achievement => `
+                    <div class="card" style="text-align: center; padding: 20px; opacity: ${achievement.earned ? '1' : '0.6'};">
+                        <div style="font-size: 3rem; margin-bottom: 10px;">${achievement.icon}</div>
+                        <h4 style="margin-bottom: 10px;">${achievement.title}</h4>
+                        <p style="color: var(--text-secondary); margin-bottom: 15px;">${achievement.description}</p>
+                        ${achievement.earned ? 
+                            `<div class="badge badge-success">مكتسب</div>` : 
+                            `<div class="badge badge-secondary">${achievement.progress || 0}/10</div>`}
+                    </div>
+                `).join('');
+            },
+            
+            // تحديث الشريط المتتالي
+            updateStreak() {
+                const streakElement = document.getElementById('streakDays');
+                if (streakElement && this.currentUser) {
+                    streakElement.textContent = this.currentUser.streak || 0;
+                }
+            },
+            
+            // إعداد المخططات
+            setupCharts() {
+                const ctx = document.getElementById('progressChart');
+                if (!ctx) return;
+                
+                this.chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['الأسبوع 1', 'الأسبوع 2', 'الأسبوع 3', 'الأسبوع 4'],
+                        datasets: [{
+                            label: 'ساعات التعلم',
+                            data: [8, 12, 15, 18],
+                            borderColor: 'rgb(79, 70, 229)',
+                            backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        }, {
+                            label: 'الدورات المكتملة',
+                            data: [1, 2, 3, 5],
+                            borderColor: 'rgb(16, 185, 129)',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary'),
+                                    font: {
+                                        family: 'Cairo'
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary')
+                                }
+                            },
+                            y: {
+                                ticks: {
+                                    color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary')
+                                }
+                            }
+                        }
+                    }
+                });
+            },
+            
+            // إعداد الآلة الحاسبة
+            setupCalculator() {
+                const buttons = [
+                    ['C', 'CE', '%', '÷', '√'],
+                    ['7', '8', '9', '×', 'x²'],
+                    ['4', '5', '6', '-', '1/x'],
+                    ['1', '2', '3', '+', '±'],
+                    ['0', '.', '=', 'sin', 'cos']
+                ];
+                
+                const calcButtons = document.getElementById('calcButtons');
+                if (calcButtons) {
+                    calcButtons.innerHTML = buttons.map(row => `
+                        ${row.map(btn => {
+                            let className = 'calc-btn';
+                            if (['÷', '×', '-', '+', '=', '%', '√', 'C', 'CE', '±'].includes(btn)) {
+                                className += ' operator';
+                            }
+                            if (['sin', 'cos', 'x²', '1/x', '√'].includes(btn)) {
+                                className += ' function';
+                            }
+                            if (btn === '=') {
+                                className += ' equals';
+                            }
+                            return `<button class="${className}" onclick="handleCalc('${btn}')">${btn}</button>`;
+                        }).join('')}
+                    `).join('');
+                }
+            },
+            
+            // إعداد السبورة الذكية
+            setupWhiteboard() {
+                const canvas = document.getElementById('whiteboardCanvas');
+                if (!canvas) return;
+                
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                
+                // تعيين حجم الكانفاس
+                this.resizeCanvas();
+                window.addEventListener('resize', () => this.resizeCanvas());
+                
+                // إضافة مستمعي الأحداث
+                canvas.addEventListener('mousedown', (e) => this.startDrawing(e));
+                canvas.addEventListener('mousemove', (e) => this.draw(e));
+                canvas.addEventListener('mouseup', () => this.stopDrawing());
+                canvas.addEventListener('mouseout', () => this.stopDrawing());
+                
+                // إعداد اللمس للأجهزة المحمولة
+                canvas.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    this.startDrawing(touch);
+                });
+                
+                canvas.addEventListener('touchmove', (e) => {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    this.draw(touch);
+                });
+                
+                canvas.addEventListener('touchend', () => this.stopDrawing());
+                
+                // تعيين الأداة الافتراضية
+                this.setTool('pen');
+            },
+            
+            resizeCanvas() {
+                if (!this.canvas) return;
+                
+                const container = this.canvas.parentElement;
+                const rect = container.getBoundingClientRect();
+                
+                this.canvas.width = rect.width;
+                this.canvas.height = rect.height;
+                
+                // إعداد إعدادات الرسم
+                this.ctx.lineCap = 'round';
+                this.ctx.lineJoin = 'round';
+                this.ctx.lineWidth = 3;
+                this.ctx.strokeStyle = '#000000';
+            },
+            
+            startDrawing(e) {
+                this.drawing = true;
+                this.ctx.beginPath();
+                const rect = this.canvas.getBoundingClientRect();
+                const x = (e.clientX || e.pageX) - rect.left;
+                const y = (e.clientY || e.pageY) - rect.top;
+                this.ctx.moveTo(x, y);
+            },
+            
+            draw(e) {
+                if (!this.drawing) return;
+                
+                const rect = this.canvas.getBoundingClientRect();
+                const x = (e.clientX || e.pageX) - rect.left;
+                const y = (e.clientY || e.pageY) - rect.top;
+                
+                this.ctx.lineTo(x, y);
+                this.ctx.stroke();
+            },
+            
+            stopDrawing() {
+                this.drawing = false;
+                this.ctx.beginPath();
+            },
+            
+            setTool(tool) {
+                this.currentTool = tool;
+                
+                // تحديث أزرار الأدوات
+                document.querySelectorAll('.whiteboard-tools .btn').forEach(btn => {
+                    btn.classList.remove('btn-primary');
+                    btn.classList.add('btn-secondary');
+                });
+                
+                const toolBtn = document.getElementById(`${tool}Tool`);
+                if (toolBtn) {
+                    toolBtn.classList.remove('btn-secondary');
+                    toolBtn.classList.add('btn-primary');
+                }
+                
+                // تحديث إعدادات الرسم
+                if (tool === 'eraser') {
+                    this.ctx.strokeStyle = 'white';
+                    this.ctx.lineWidth = 20;
+                } else if (tool === 'pen') {
+                    this.ctx.strokeStyle = document.getElementById('colorPicker').value;
+                    this.ctx.lineWidth = document.getElementById('brushSize').value;
+                }
+            },
+            
+            changeColor(color) {
+                this.ctx.strokeStyle = color;
+            },
+            
+            changeBrushSize(size) {
+                this.ctx.lineWidth = size;
+                document.getElementById('brushSizeLabel').textContent = `${size}px`;
+            },
+            
+            clearWhiteboard() {
+                if (this.ctx) {
+                    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                }
+            },
+            
+            // إعداد القارئ الإلكتروني
+            setupEbook() {
+                const content = document.getElementById('ebookContent');
+                if (content) {
+                    content.innerHTML = `
+                        <h1>مقدمة في علوم الكمبيوتر</h1>
+                        <h3 style="color: var(--text-secondary); margin-bottom: 30px;">
+                            تأليف: د. أحمد محمد
+                        </h3>
+                        
+                        <h2>الفصل الأول: مقدمة في البرمجة</h2>
+                        <p>البرمجة هي عملية كتابة تعليمات وتوجيهات لأجهزة الحاسوب لتوجيهها نحو أداء مهام محددة. تُكتب هذه التعليمات بلغة برمجة يفهمها الحاسوب وينفذها بدقة.</p>
+                        
+                        <h3>ما هي لغة البرمجة؟</h3>
+                        <p>لغة البرمجة هي مجموعة من القواعد النحوية والدلالية التي تُستخدم لإنشاء برامج الحاسوب. تشبه إلى حد كبير اللغات البشرية، لكنها أكثر تنظيماً ودقة.</p>
+                        
+                        <div style="background: var(--bg-secondary); border-radius: var(--radius-lg); padding: 25px; margin: 25px 0; border-right: 4px solid var(--primary);">
+                            <h4 style="color: var(--primary); margin-bottom: 15px;">
+                                <i class="fas fa-lightbulb"></i> معلومة مهمة
+                            </h4>
+                            <p style="margin: 0;">أول لغة برمجة عالية المستوى كانت Fortran، التي طورتها شركة IBM في الخمسينيات من القرن الماضي.</p>
+                        </div>
+                    `;
+                }
+            },
+            
+            // إعداد تأثيرات الدخول
+            setupAnimations() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('animated');
+                        }
+                    });
+                }, {
+                    threshold: 0.1
+                });
+                
+                document.querySelectorAll('[data-animate]').forEach(el => {
+                    observer.observe(el);
+                });
+            },
+            
+            // النوافذ المنبثقة
+            openModal(modalId) {
+                document.getElementById(modalId).classList.add('active');
+            },
+            
+            closeModal(modalId) {
+                document.getElementById(modalId).classList.remove('active');
+                
+                // إيقاف الفيديو عند إغلاق النافذة
+                if (modalId === 'videoPlayerModal') {
+                    const videoPlayer = document.getElementById('courseVideoPlayer');
+                    videoPlayer.src = '';
+                }
+            },
+            
+            // المساعد الذكي
+            askAIQuestion() {
+                const input = document.getElementById('aiQuestion');
+                const chat = document.getElementById('chatContainer');
+                const question = input.value.trim();
+                
+                if (!question) {
+                    this.showNotification('الرجاء كتابة سؤال أولاً', 'warning');
+                    return;
+                }
+                
+                // إضافة سؤال المستخدم
+                chat.innerHTML += `
+                    <div class="chat-message user-message">
+                        <div style="font-weight: 600; margin-bottom: 8px;">
+                            <i class="fas fa-user"></i> أنت:
+                        </div>
+                        <div>${question}</div>
+                    </div>
+                `;
+                
+                input.value = '';
+                
+                // إظهار مؤشر الكتابة
+                const typingElement = document.getElementById('aiTyping');
+                typingElement.style.display = 'flex';
+                
+                chat.scrollTop = chat.scrollHeight;
+                
+                // محاكاة إجابة الذكاء الاصطناعي
+                setTimeout(() => {
+                    typingElement.style.display = 'none';
+                    
+                    let answer = "شكراً لسؤالك! يمكنني مساعدتك في مواضيع مثل البرمجة، الرياضيات، اللغات، والتطوير المهني. هل يمكنك توضيح سؤالك أكثر؟";
+                    
+                    // إجابات مسبقة لبعض الأسئلة
+                    if (question.includes('برمجة') || question.includes('كائنية')) {
+                        answer = "البرمجة الكائنية (OOP) هي نموذج برمجي يعتمد على مفهوم 'الكائنات' التي تحتوي على بيانات وتعليمات معاً. المبادئ الأساسية: التغليف، الوراثة، تعدد الأشكال، والربط الديناميكي.";
+                    } else if (question.includes('إنجليزية') || question.includes('لغة')) {
+                        answer = "لتعلم اللغة الإنجليزية بسرعة: 1) تعلم 10-20 كلمة يومياً 2) استمع لمحادثات 30 دقيقة يومياً 3) تحدث مع نفسك أو شركاء اللغة 4) شاهد أفلام باللغة الإنجليزية مع الترجمة.";
+                    } else if (question.includes('فيثاغورس')) {
+                        answer = "نظرية فيثاغورس: في المثلث القائم الزاوية، مربع طول الوتر يساوي مجموع مربعي طولي الضلعين الآخرين (c² = a² + b²).";
+                    }
+                    
+                    chat.innerHTML += `
+                        <div class="chat-message ai-message">
+                            <div style="font-weight: 600; margin-bottom: 8px; color: var(--primary); display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-robot"></i>
+                                مساعد التعلم:
+                            </div>
+                            <div>${answer}</div>
+                        </div>
+                    `;
+                    
+                    chat.scrollTop = chat.scrollHeight;
+                    
+                    this.showNotification('تمت الإجابة على سؤالك', 'success');
+                }, 1500);
+            },
+            
+            // تحديث أرقام الأسطر في محرر الكود
+            updateLineNumbers() {
+                const textarea = document.getElementById('codeInput');
+                const lineNumbers = document.getElementById('lineNumbers');
+                if (!textarea || !lineNumbers) return;
+                
+                const lines = textarea.value.split('\n').length;
+                lineNumbers.innerHTML = Array(lines).fill(0).map((_, i) => i + 1).join('<br>');
+            },
+            
+            // تشغيل الكود
+            runCode() {
+                const code = document.getElementById('codeInput').value;
+                const language = document.getElementById('codeLanguage').value;
+                const output = document.getElementById('codeOutput');
+                
+                output.innerHTML = '<div class="code-output-item info"><i class="fas fa-spinner fa-spin"></i> جاري التشغيل...</div>';
+                
+                try {
+                    if (language === 'javascript') {
+                        const result = eval(code);
+                        output.innerHTML = `<div class="code-output-item success">✅ الناتج: ${result}</div>`;
+                    } else {
+                        output.innerHTML = '<div class="code-output-item success">✅ تم تنفيذ الكود بنجاح</div>';
+                    }
+                } catch (error) {
+                    output.innerHTML = `<div class="code-output-item error">❌ خطأ: ${error.message}</div>`;
+                }
+            },
+            
+            // الإشعارات
+            showNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                
+                let icon = 'ℹ️';
+                if (type === 'success') icon = '✅';
+                else if (type === 'warning') icon = '⚠️';
+                else if (type === 'error') icon = '❌';
+                
+                notification.innerHTML = `
+                    <div class="notification-icon">${icon}</div>
+                    <div class="notification-content">
+                        <div class="notification-title">${type === 'success' ? 'نجاح' : type === 'warning' ? 'تحذير' : type === 'error' ? 'خطأ' : 'معلومة'}</div>
+                        <div class="notification-message">${message}</div>
+                    </div>
+                    <button onclick="this.parentElement.remove()" style="background: none; border: none; color: var(--text-tertiary); cursor: pointer;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // إظهار الإشعار
+                setTimeout(() => notification.classList.add('show'), 10);
+                
+                // إخفاء تلقائي بعد 3 ثوانٍ
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+                
+                // تأثيرات عند النجاح
+                if (type === 'success') {
+                    try {
+                        confetti({
+                            particleCount: 100,
+                            spread: 70
+                        });
+                    } catch (e) {
+                        console.log('Confetti غير متوفر');
+                    }
+                }
+            }
+        };
+
+        // ============================================
+        // دوال عامة للاستخدام في HTML
+        // ============================================
+
+        // الآلة الحاسبة
+        let calcValue = '0';
+        let calcHistory = [];
+
+        function handleCalc(key) {
+            const display = document.getElementById('calcDisplay');
+            const history = document.getElementById('calcHistory');
+            
+            switch(key) {
+                case 'C':
+                    calcValue = '0';
+                    calcHistory = [];
+                    break;
+                case 'CE':
+                    calcValue = '0';
+                    break;
+                case '=':
+                    try {
+                        const expression = calcValue.replace(/×/g, '*').replace(/÷/g, '/');
+                        const result = eval(expression);
+                        calcHistory.push(`${calcValue} = ${result}`);
+                        if (calcHistory.length > 3) calcHistory.shift();
+                        calcValue = result.toString();
+                    } catch {
+                        calcValue = 'Error';
+                    }
+                    break;
+                case '+': case '-': case '×': case '÷':
+                    calcValue += ` ${key} `;
+                    break;
+                case '√':
+                    try {
+                        calcValue = Math.sqrt(parseFloat(calcValue)).toString();
+                    } catch {
+                        calcValue = 'Error';
+                    }
+                    break;
+                case 'x²':
+                    try {
+                        calcValue = Math.pow(parseFloat(calcValue), 2).toString();
+                    } catch {
+                        calcValue = 'Error';
+                    }
+                    break;
+                case '1/x':
+                    try {
+                        calcValue = (1 / parseFloat(calcValue)).toString();
+                    } catch {
+                        calcValue = 'Error';
+                    }
+                    break;
+                case 'sin':
+                    try {
+                        calcValue = Math.sin(parseFloat(calcValue) * Math.PI / 180).toString();
+                    } catch {
+                        calcValue = 'Error';
+                    }
+                    break;
+                case 'cos':
+                    try {
+                        calcValue = Math.cos(parseFloat(calcValue) * Math.PI / 180).toString();
+                    } catch {
+                        calcValue = 'Error';
+                    }
+                    break;
+                case '±':
+                    try {
+                        calcValue = (-parseFloat(calcValue)).toString();
+                    } catch {
+                        calcValue = 'Error';
+                    }
+                    break;
+                default:
+                    if (calcValue === '0' || calcValue === 'Error') {
+                        calcValue = key;
+                    } else {
+                        calcValue += key;
+                    }
+            }
+            
+            display.textContent = calcValue;
+            if (history) {
+                history.textContent = calcHistory.join(' | ');
+            }
+        }
+
+        // دوال التعلم
+        function enrollCourse(courseId) {
+            const course = LearningSystem.courses.find(c => c.id === courseId);
+            if (course) {
+                course.progress = Math.min(course.progress + 20, 100);
+                LearningSystem.renderCourses();
+                
+                if (course.progress === 100) {
+                    LearningSystem.showNotification(`🎉 مبروك! أكملت دورة "${course.title}"`, 'success');
+                } else {
+                    LearningSystem.showNotification(`📚 تم تسجيلك في "${course.title}"`, 'success');
+                }
+                
+                // تحديث نقاط المستخدم
+                if (LearningSystem.currentUser) {
+                    LearningSystem.currentUser.points += 50;
+                    LearningSystem.currentUser.streak++;
+                    localStorage.setItem('learningUser', JSON.stringify(LearningSystem.currentUser));
+                    LearningSystem.updateStreak();
+                    LearningSystem.updateUserProfile();
+                }
+            }
+        }
+
+        function openCourseVideo(courseId) {
+            LearningSystem.openCourseVideo(courseId);
+        }
+
+        function toggleModuleCompletion(index, completed) {
+            LearningSystem.showNotification(
+                completed ? 'تم تحديد الدرس كمكتمل' : 'تم إلغاء اكتمال الدرس',
+                completed ? 'success' : 'info'
+            );
+        }
+
+        function openTool(toolId) {
+            const tool = LearningSystem.tools.find(t => t.id === toolId);
+            if (!tool) return;
+            
+            LearningSystem.showNotification(`جاري فتح ${tool.name}...`, 'info');
+            
+            setTimeout(() => {
+                switch(toolId) {
+                    case 1:
+                        openCodeEditor();
+                        break;
+                    case 2:
+                        openWhiteboard();
+                        break;
+                    case 3:
+                        openNotePad();
+                        break;
+                    case 4:
+                        openCalculator();
+                        break;
+                }
+            }, 500);
+        }
+
+        function toggleTask(taskId) {
+            const task = LearningSystem.dailyTasks.find(t => t.id === taskId);
+            if (task) {
+                task.completed = !task.completed;
+                LearningSystem.renderTasks();
+                
+                if (task.completed) {
+                    LearningSystem.showNotification('✅ تم إكمال المهمة!', 'success');
+                    
+                    // تحديث نقاط المستخدم
+                    if (LearningSystem.currentUser) {
+                        LearningSystem.currentUser.points += task.points;
+                        localStorage.setItem('learningUser', JSON.stringify(LearningSystem.currentUser));
+                        LearningSystem.updateUserProfile();
+                    }
+                }
+            }
+        }
+
+        // فتح الأدوات
+        function openSidebar() {
+            document.getElementById('learningSidebar').classList.add('active');
+        }
+
+        function closeSidebar() {
+            document.getElementById('learningSidebar').classList.remove('active');
+        }
+
+        function openNotePad() {
+            LearningSystem.openModal('notePadModal');
+            if (!LearningSystem.editor) {
+                LearningSystem.editor = new Quill('#notePadEditor', {
+                    theme: 'snow',
+                    modules: {
+                        toolbar: [
+                            [{ 'header': [1, 2, 3, false] }],
+                            ['bold', 'italic', 'underline'],
+                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                            ['clean']
+                        ]
+                    }
+                });
+            }
+        }
+
+        function openCalculator() {
+            LearningSystem.openModal('calculatorModal');
+        }
+
+        function openCodeEditor() {
+            LearningSystem.openModal('codeEditorModal');
+            LearningSystem.updateLineNumbers();
+        }
+
+        function openWhiteboard() {
+            LearningSystem.openModal('whiteboardModal');
+        }
+
+        // دوال محرر الكود
+        function saveCode() {
+            const code = document.getElementById('codeInput').value;
+            localStorage.setItem('savedCode', code);
+            LearningSystem.showNotification('💾 تم حفظ الكود', 'success');
+        }
+
+        function clearCode() {
+            document.getElementById('codeInput').value = '';
+            document.getElementById('codeOutput').innerHTML = '<div style="color: #94a3b8; padding: 16px;">المخرجات ستظهر هنا...</div>';
+            LearningSystem.updateLineNumbers();
+            LearningSystem.showNotification('🗑️ تم مسح الكود', 'info');
+        }
+
+        function formatCode() {
+            LearningSystem.showNotification('🎨 جاري تنسيق الكود...', 'info');
+            // هنا يمكن إضافة منطق التنسيق
+        }
+
+        function shareCode() {
+            LearningSystem.showNotification('🔗 جاري مشاركة الكود...', 'info');
+        }
+
+        function changeLanguage() {
+            LearningSystem.updateLineNumbers();
+        }
+
+        // دوال السبورة الذكية
+        function setTool(tool) {
+            LearningSystem.setTool(tool);
+        }
+
+        function changeColor(color) {
+            LearningSystem.changeColor(color);
+        }
+
+        function changeBrushSize(size) {
+            LearningSystem.changeBrushSize(size);
+        }
+
+        function clearWhiteboard() {
+            LearningSystem.clearWhiteboard();
+            LearningSystem.showNotification('🗑️ تم مسح السبورة', 'info');
+        }
+
+        function saveWhiteboard() {
+            if (LearningSystem.canvas) {
+                const link = document.createElement('a');
+                link.download = 'السبورة.png';
+                link.href = LearningSystem.canvas.toDataURL();
+                link.click();
+                LearningSystem.showNotification('💾 تم حفظ السبورة', 'success');
+            }
+        }
+
+        // دوال التنقل
+        function navigateTo(section) {
+            LearningSystem.navigateTo(section);
+        }
+
+        function filterCourses(category) {
+            // تحديث الأزرار النشطة
+            document.querySelectorAll('.course-filters .badge').forEach(badge => {
+                badge.classList.remove('active');
+                badge.classList.add('badge-secondary');
+            });
+            
+            const activeBtn = event.target;
+            activeBtn.classList.remove('badge-secondary');
+            activeBtn.classList.add('badge-primary', 'active');
+            
+            LearningSystem.renderCourses(category);
+        }
+
+        function showAllCourses() {
+            LearningSystem.showNotification('📚 جاري تحميل جميع الدورات...', 'info');
+            filterCourses('all');
+        }
+
+        // دوال المكتبة
+        function searchLibrary() {
+            const query = document.getElementById('librarySearch').value;
+            if (query) {
+                LearningSystem.showNotification(`🔍 جاري البحث عن "${query}"`, 'info');
+            }
+        }
+
+        function openBook(bookId) {
+            LearningSystem.showNotification('📖 جاري فتح الكتاب...', 'info');
+        }
+
+        function prevChapter() {
+            LearningSystem.showNotification('⏮️ جاري تحميل الفصل السابق...', 'info');
+        }
+
+        function nextChapter() {
+            LearningSystem.showNotification('⏭️ جاري تحميل الفصل التالي...', 'info');
+        }
+
+        function showBookIndex() {
+            LearningSystem.showNotification('📑 جاري فتح الفهرس...', 'info');
+        }
+
+        function toggleBookmark() {
+            LearningSystem.showNotification('🔖 تم إضافة/إزالة الإشارة المرجعية', 'success');
+        }
+
+        function changeFontSize(delta) {
+            const content = document.getElementById('ebookContent');
+            if (content) {
+                const currentSize = parseInt(window.getComputedStyle(content).fontSize);
+                const newSize = Math.max(12, Math.min(24, currentSize + delta));
+                content.style.fontSize = newSize + 'px';
+                LearningSystem.showNotification(`🔤 حجم الخط: ${newSize}px`, 'info');
+            }
+        }
+
+        // دوال المجتمع
+        function openForums() {
+            LearningSystem.showNotification('💬 جاري فتح منتديات النقاش...', 'info');
+        }
+
+        function openStudyGroups() {
+            LearningSystem.showNotification('👥 جاري فتح مجموعات الدراسة...', 'info');
+        }
+
+        function openChallenges() {
+            LearningSystem.showNotification('🏆 جاري فتح التحديات...', 'info');
+        }
+
+        // دوال الفوتر
+        function openHelpCenter() {
+            LearningSystem.showNotification('🆘 جاري فتح مركز المساعدة...', 'info');
+        }
+
+        function openFAQ() {
+            LearningSystem.showNotification('❓ جاري فتح الأسئلة الشائعة...', 'info');
+        }
+
+        function openContact() {
+            LearningSystem.showNotification('📞 جاري فتح صفحة الاتصال...', 'info');
+        }
+
+        function openFeedback() {
+            LearningSystem.showNotification('💡 جاري فتح نموذج الاقتراحات...', 'info');
+        }
+
+        function openPrivacy() {
+            LearningSystem.showNotification('🔒 جاري فتح سياسة الخصوصية...', 'info');
+        }
+
+        function openTerms() {
+            LearningSystem.showNotification('📄 جاري فتح شروط الاستخدام...', 'info');
+        }
+
+        function openProjects() {
+            LearningSystem.showNotification('💼 جاري فتح المشاريع العملية...', 'info');
+        }
+
+        function openResearch() {
+            LearningSystem.showNotification('🔬 جاري فتح الأبحاث العلمية...', 'info');
+        }
+
+        function openBlog() {
+            LearningSystem.showNotification('✍️ جاري فتح المدونة التعليمية...', 'info');
+        }
+
+        function showCertificates() {
+            LearningSystem.showNotification('🏅 جاري فتح الشهادات...', 'info');
+        }
+
+        // دوال المستخدم
+        function showProfile() {
+            LearningSystem.showProfile();
+            LearningSystem.openModal('profileModal');
+        }
+
+        function showAchievements() {
+            LearningSystem.renderAllAchievements();
+            LearningSystem.openModal('achievementsModal');
+        }
+
+        function showSettings() {
+            LearningSystem.showNotification('⚙️ جاري فتح الإعدادات...', 'info');
+        }
+
+        function logout() {
+            LearningSystem.showNotification('👋 جاري تسجيل الخروج...', 'info');
+            setTimeout(() => {
+                localStorage.removeItem('learningUser');
+                location.reload();
+            }, 1500);
+        }
+
+        // دوال أخرى
+        function startLearning() {
+            LearningSystem.showNotification('🚀 بدأت رحلة التعلم!', 'success');
+            navigateTo('courses');
+        }
+
+        function showDemo() {
+            LearningSystem.showNotification('🎬 جاري تحميل العرض التوضيحي...', 'info');
+        }
+
+        function closeModal(modalId) {
+            LearningSystem.closeModal(modalId);
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            LearningSystem.showNotification('⬆️ تم الانتقال للأعلى', 'info');
+        }
+
+        function askAIQuestion() {
+            LearningSystem.askAIQuestion();
+        }
+
+        function suggestQuestion(question) {
+            document.getElementById('aiQuestion').value = question;
+            LearningSystem.askAIQuestion();
+        }
+
+        function saveNote() {
+            LearningSystem.showNotification('💾 تم حفظ الملاحظة', 'success');
+        }
+
+        function exportNote() {
+            LearningSystem.showNotification('📥 جاري تصدير الملاحظة...', 'info');
+        }
+
+        function shareNote() {
+            LearningSystem.showNotification('🔗 جاري مشاركة الملاحظة...', 'info');
+        }
+
+        function downloadPDF() {
+            LearningSystem.showNotification('📄 جاري تحميل ملف PDF...', 'info');
+        }
+
+        function downloadCode() {
+            LearningSystem.showNotification('💾 جاري تحميل ملفات الكود...', 'info');
+        }
+
+        function downloadSlides() {
+            LearningSystem.showNotification('🖼️ جاري تحميل الشرائح...', 'info');
+        }
+
+        // ============================================
+        // تهيئة النظام عند تحميل الصفحة
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            LearningSystem.init();
+            
+            // إضافة تأثيرات للروابط
+            document.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    if (this.getAttribute('href') === '#') {
+                        e.preventDefault();
+                    }
+                });
+            });
+            
+            // تحسين تتبع التمرير
+            window.addEventListener('scroll', () => {
+                const scrollPosition = window.scrollY;
+                const header = document.querySelector('.main-header');
+                
+                if (scrollPosition > 100) {
+                    header.style.boxShadow = 'var(--shadow-lg)';
+                } else {
+                    header.style.boxShadow = 'var(--shadow-md)';
+                }
+            });
+        });
+
+        // ============================================
+        // جعل الدوال متاحة عالمياً
+        // ============================================
+        window.LearningSystem = LearningSystem;
+        window.handleCalc = handleCalc;
+        window.enrollCourse = enrollCourse;
+        window.openCourseVideo = openCourseVideo;
+        window.toggleModuleCompletion = toggleModuleCompletion;
+        window.openTool = openTool;
+        window.toggleTask = toggleTask;
+        window.openSidebar = openSidebar;
+        window.closeSidebar = closeSidebar;
+        window.openNotePad = openNotePad;
+        window.openCalculator = openCalculator;
+        window.openCodeEditor = openCodeEditor;
+        window.openWhiteboard = openWhiteboard;
+        window.saveCode = saveCode;
+        window.clearCode = clearCode;
+        window.formatCode = formatCode;
+        window.shareCode = shareCode;
+        window.changeLanguage = changeLanguage;
+        window.setTool = setTool;
+        window.changeColor = changeColor;
+        window.changeBrushSize = changeBrushSize;
+        window.clearWhiteboard = clearWhiteboard;
+        window.saveWhiteboard = saveWhiteboard;
+        window.navigateTo = navigateTo;
+        window.filterCourses = filterCourses;
+        window.showAllCourses = showAllCourses;
+        window.searchLibrary = searchLibrary;
+        window.openBook = openBook;
+        window.prevChapter = prevChapter;
+        window.nextChapter = nextChapter;
+        window.showBookIndex = showBookIndex;
+        window.toggleBookmark = toggleBookmark;
+        window.changeFontSize = changeFontSize;
+        window.openForums = openForums;
+        window.openStudyGroups = openStudyGroups;
+        window.openChallenges = openChallenges;
+        window.openHelpCenter = openHelpCenter;
+        window.openFAQ = openFAQ;
+        window.openContact = openContact;
+        window.openFeedback = openFeedback;
+        window.openPrivacy = openPrivacy;
+        window.openTerms = openTerms;
+        window.openProjects = openProjects;
+        window.openResearch = openResearch;
+        window.openBlog = openBlog;
+        window.showCertificates = showCertificates;
+        window.showProfile = showProfile;
+        window.showAchievements = showAchievements;
+        window.showSettings = showSettings;
+        window.logout = logout;
+        window.startLearning = startLearning;
+        window.showDemo = showDemo;
+        window.closeModal = closeModal;
+        window.scrollToTop = scrollToTop;
+        window.askAIQuestion = askAIQuestion;
+        window.suggestQuestion = suggestQuestion;
+        window.saveNote = saveNote;
+        window.exportNote = exportNote;
+        window.shareNote = shareNote;
+        window.downloadPDF = downloadPDF;
+        window.downloadCode = downloadCode;
+        window.downloadSlides = downloadSlides;
+        window.runCode = () => LearningSystem.runCode();
+        window.closeMobileMenu = () => LearningSystem.closeMobileMenu();
+
+    </script>
+</body>
+</html>
