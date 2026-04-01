@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LearnVerse — كون المعرفة اللامحدود</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Tajawal:wght@300;400;500;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #020212;
+    --bg2: #060620;
+    --cyan: #00f5ff;
+    --pink: #ff2d78;
+    --violet: #8b5cf6;
+    --gold: #ffd700;
+    --green: #00ffaa;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --card: rgba(255,255,255,0.04);
+    --border: rgba(255,255,255,0.08);
+    --glow-cyan: 0 0 30px rgba(0,245,255,0.4);
+    --glow-pink: 0 0 30px rgba(255,45,120,0.4);
+    --glow-violet: 0 0 30px rgba(139,92,246,0.4);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Tajawal', sans-serif;
+    overflow-x: hidden;
+    direction: rtl;
+  }
+
+  /* ─── CANVAS STARS ─── */
+  #starfield {
+    position: fixed; top:0; left:0;
+    width:100%; height:100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ─── AURORA ─── */
+  .aurora {
+    position: fixed; top:0; left:0;
+    width:100%; height:100%;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .aurora-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.12;
+    animation: floatBlob 20s ease-in-out infinite;
+  }
+  .ab1 { width:700px; height:500px; background: radial-gradient(circle, var(--cyan), transparent); top:-100px; right:-200px; animation-delay:0s; }
+  .ab2 { width:600px; height:600px; background: radial-gradient(circle, var(--pink), transparent); bottom:-200px; left:-100px; animation-delay:-7s; }
+  .ab3 { width:500px; height:400px; background: radial-gradient(circle, var(--violet), transparent); top:40%; left:30%; animation-delay:-14s; }
+
+  @keyframes floatBlob {
+    0%,100% { transform: translate(0,0) scale(1); }
+    33% { transform: translate(60px,-40px) scale(1.1); }
+    66% { transform: translate(-40px,50px) scale(0.95); }
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top:0; width:100%;
+    z-index: 1000;
+    padding: 1rem 3rem;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(2,2,18,0.7);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.5rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--cyan), var(--violet));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 2px;
+  }
+
+  .nav-links { display:flex; gap:2rem; list-style:none; }
+  .nav-links a {
+    color: var(--muted); text-decoration:none;
+    font-size: 0.9rem; font-weight: 500;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--cyan); }
+
+  .nav-actions { display:flex; gap:1rem; align-items:center; }
+
+  .lang-btn {
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: var(--card);
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.85rem;
+    transition: all 0.3s;
+  }
+  .lang-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+
+  .btn-primary {
+    padding: 0.6rem 1.5rem;
+    background: linear-gradient(135deg, var(--cyan), var(--violet));
+    border: none; border-radius: 25px;
+    color: #020212; font-weight: 800;
+    font-family: 'Tajawal', sans-serif;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    box-shadow: var(--glow-cyan);
+  }
+  .btn-primary:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 0 50px rgba(0,245,255,0.6); }
+
+  /* ─── HERO ─── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 8rem 2rem 4rem;
+    z-index: 1;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.5rem 1.5rem;
+    background: rgba(0,245,255,0.1);
+    border: 1px solid rgba(0,245,255,0.3);
+    border-radius: 30px;
+    font-size: 0.85rem; color: var(--cyan);
+    margin-bottom: 2rem;
+    animation: fadeInDown 1s ease;
+  }
+  .hero-badge .dot {
+    width: 8px; height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse { 0%,100%{opacity:1; transform:scale(1);} 50%{opacity:0.5; transform:scale(1.4);} }
+
+  .hero-title {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 1.5rem;
+    animation: fadeInUp 1s ease 0.2s both;
+  }
+  .hero-title .glow-text {
+    background: linear-gradient(135deg, var(--cyan) 0%, var(--violet) 50%, var(--pink) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 4s linear infinite;
+    background-size: 200%;
+  }
+  @keyframes shimmer { 0%{background-position:0%} 100%{background-position:200%} }
+
+  .hero-sub {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: var(--muted);
+    max-width: 700px;
+    margin: 0 auto 3rem;
+    line-height: 1.8;
+    animation: fadeInUp 1s ease 0.4s both;
+  }
+
+  .hero-cta {
+    display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    animation: fadeInUp 1s ease 0.6s both;
+    margin-bottom: 4rem;
+  }
+
+  .btn-ghost {
+    padding: 0.8rem 2rem;
+    border: 2px solid var(--violet);
+    border-radius: 25px;
+    background: transparent;
+    color: var(--violet);
+    font-weight: 700;
+    font-family: 'Tajawal', sans-serif;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s;
+  }
+  .btn-ghost:hover { background: var(--violet); color: white; box-shadow: var(--glow-violet); }
+
+  .btn-hero {
+    padding: 0.9rem 2.5rem;
+    background: linear-gradient(135deg, var(--cyan), var(--violet));
+    border: none; border-radius: 25px;
+    color: #020212; font-weight: 900;
+    font-family: 'Tajawal', sans-serif;
+    cursor: pointer; font-size: 1rem;
+    transition: all 0.3s;
+    box-shadow: var(--glow-cyan);
+  }
+  .btn-hero:hover { transform: translateY(-3px) scale(1.05); }
+
+  /* ─── FLOATING PLANETS ─── */
+  .planet {
+    position: absolute;
+    border-radius: 50%;
+    animation: orbit linear infinite;
+    pointer-events: none;
+  }
+  .p1 { width:80px; height:80px; background: radial-gradient(circle at 35% 35%, #4ecdc4, #1a535c); top:15%; left:10%; animation-duration:25s; box-shadow: 0 0 30px rgba(78,205,196,0.5); }
+  .p2 { width:50px; height:50px; background: radial-gradient(circle at 35% 35%, #f7dc6f, #d4ac0d); top:70%; right:8%; animation-duration:18s; box-shadow: 0 0 20px rgba(247,220,111,0.5); }
+  .p3 { width:35px; height:35px; background: radial-gradient(circle at 35% 35%, var(--pink), #8e0040); top:30%; right:15%; animation-duration:30s; box-shadow: var(--glow-pink); }
+  .p4 { width:60px; height:60px; background: radial-gradient(circle at 35% 35%, var(--violet), #3b0764); bottom:25%; left:15%; animation-duration:22s; box-shadow: var(--glow-violet); }
+
+  @keyframes orbit {
+    0%,100% { transform: translateY(0px) rotate(0deg); }
+    25% { transform: translateY(-20px) rotate(5deg); }
+    50% { transform: translateY(-10px) rotate(0deg); }
+    75% { transform: translateY(10px) rotate(-5deg); }
+  }
+
+  /* ─── STATS ─── */
+  .stats-band {
+    position: relative; z-index: 1;
+    background: rgba(255,255,255,0.03);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 2.5rem;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    text-align: center;
+  }
+  .stat-item { padding: 1rem; }
+  .stat-number {
+    font-family: 'Orbitron', monospace;
+    font-size: 2rem; font-weight: 900;
+    background: linear-gradient(135deg, var(--cyan), var(--violet));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .stat-label { color: var(--muted); font-size: 0.85rem; margin-top: 0.3rem; }
+
+  /* ─── SECTION TITLES ─── */
+  .section { position: relative; z-index: 1; padding: 6rem 2rem; max-width: 1400px; margin: 0 auto; }
+
+  .sec-title {
+    text-align: center; margin-bottom: 1rem;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 900;
+  }
+  .sec-title span { color: var(--cyan); }
+  .sec-sub {
+    text-align: center; color: var(--muted);
+    font-size: 1rem; max-width: 600px;
+    margin: 0 auto 4rem; line-height: 1.7;
+  }
+
+  /* ─── SUBJECTS ─── */
+  .subjects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+  }
+
+  .subject-card {
+    padding: 1.5rem 1rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .subject-card::before {
+    content:'';
+    position: absolute; inset:0;
+    background: linear-gradient(135deg, var(--glow-color, var(--cyan)), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .subject-card:hover { border-color: var(--glow-color, var(--cyan)); transform: translateY(-5px); }
+  .subject-card:hover::before { opacity: 0.1; }
+  .subject-card .icon { font-size: 2.5rem; margin-bottom: 0.75rem; display:block; }
+  .subject-card .name { font-size: 0.9rem; font-weight: 700; }
+  .subject-card .count { font-size: 0.75rem; color: var(--muted); margin-top: 0.25rem; }
+
+  /* ─── FEATURES 100 ─── */
+  .features-container { display: flex; flex-direction: column; gap: 4rem; }
+
+  .feature-category { }
+  .cat-header {
+    display: flex; align-items: center; gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .cat-icon { font-size: 1.5rem; }
+  .cat-title { font-size: 1.3rem; font-weight: 800; color: var(--text); }
+  .cat-badge {
+    margin-right: auto;
+    background: rgba(0,245,255,0.1);
+    border: 1px solid rgba(0,245,255,0.2);
+    color: var(--cyan);
+    padding: 0.2rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .feature-pill {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: all 0.25s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .feature-pill:hover {
+    border-color: var(--pill-color, var(--cyan));
+    background: rgba(0,245,255,0.06);
+    transform: translateX(-3px);
+    box-shadow: 3px 0 0 var(--pill-color, var(--cyan));
+  }
+  .f-icon { font-size: 1.2rem; flex-shrink: 0; }
+  .f-name { font-size: 0.85rem; font-weight: 600; }
+  .f-num {
+    margin-right: auto; margin-left: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem; color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  /* ─── COURSE CARDS ─── */
+  .courses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .course-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.35s;
+    cursor: pointer;
+  }
+  .course-card:hover { transform: translateY(-8px); border-color: var(--cyan); box-shadow: 0 20px 60px rgba(0,0,0,0.4), var(--glow-cyan); }
+
+  .course-thumb {
+    height: 160px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .course-thumb::before {
+    content:'';
+    position: absolute; inset: 0;
+    opacity: 0.3;
+  }
+
+  .course-body { padding: 1.25rem; }
+  .course-tag {
+    display: inline-block;
+    padding: 0.2rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.7rem; font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+  .course-title { font-size: 1rem; font-weight: 800; margin-bottom: 0.5rem; line-height: 1.4; }
+  .course-meta { display:flex; align-items:center; gap:1rem; color: var(--muted); font-size:0.8rem; margin-top:1rem; }
+  .course-rating { color: var(--gold); }
+  .course-progress {
+    margin-top: 0.75rem;
+    height: 4px; background: var(--border);
+    border-radius: 2px; overflow: hidden;
+  }
+  .course-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--cyan), var(--violet));
+    border-radius: 2px;
+    transition: width 1s ease;
+  }
+
+  /* ─── AI TUTOR SECTION ─── */
+  .ai-section {
+    position: relative; z-index:1;
+    background: linear-gradient(135deg, rgba(0,245,255,0.05), rgba(139,92,246,0.05));
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 6rem 2rem;
+  }
+
+  .ai-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 4rem; align-items: center;
+  }
+
+  .ai-visual {
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+
+  .ai-orb {
+    width: 250px; height: 250px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 40%, rgba(0,245,255,0.3), rgba(139,92,246,0.2), transparent);
+    border: 2px solid rgba(0,245,255,0.3);
+    display: flex; align-items:center; justify-content:center;
+    font-size: 5rem;
+    position: relative;
+    animation: orbPulse 4s ease-in-out infinite;
+    box-shadow: 0 0 80px rgba(0,245,255,0.2), inset 0 0 80px rgba(139,92,246,0.1);
+  }
+  @keyframes orbPulse {
+    0%,100% { box-shadow: 0 0 80px rgba(0,245,255,0.2), inset 0 0 80px rgba(139,92,246,0.1); }
+    50% { box-shadow: 0 0 140px rgba(0,245,255,0.4), inset 0 0 120px rgba(139,92,246,0.2); }
+  }
+
+  .orb-ring {
+    position:absolute; border-radius:50%;
+    border: 1px solid rgba(0,245,255,0.15);
+    animation: spin linear infinite;
+  }
+  .ring1 { width:300px; height:300px; animation-duration:15s; }
+  .ring2 { width:360px; height:360px; animation-duration:25s; animation-direction:reverse; border-style: dashed; }
+  .ring3 { width:420px; height:420px; animation-duration:35s; border-color: rgba(255,45,120,0.1); }
+  @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+  .ai-content .sec-title { text-align: right; }
+  .ai-content .sec-sub { text-align: right; margin-right: 0; margin-left: auto; }
+
+  .ai-chat-preview {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.25rem;
+    margin-top: 1.5rem;
+  }
+  .chat-msg {
+    display: flex; gap: 0.75rem; margin-bottom: 1rem;
+    align-items: flex-start;
+  }
+  .chat-msg.user { flex-direction: row-reverse; }
+  .chat-avatar {
+    width:35px; height:35px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1rem; flex-shrink:0;
+  }
+  .chat-avatar.ai-av { background: linear-gradient(135deg, var(--cyan), var(--violet)); }
+  .chat-avatar.user-av { background: linear-gradient(135deg, var(--pink), var(--violet)); }
+  .chat-bubble {
+    padding: 0.6rem 1rem; border-radius: 12px;
+    font-size: 0.85rem; line-height: 1.5;
+    max-width: 80%;
+  }
+  .ai-av + .chat-bubble { background: rgba(0,245,255,0.1); border: 1px solid rgba(0,245,255,0.2); border-radius: 4px 12px 12px 12px; }
+  .chat-msg.user .chat-bubble { background: rgba(139,92,246,0.2); border: 1px solid rgba(139,92,246,0.2); border-radius: 12px 4px 12px 12px; }
+
+  .chat-input-row {
+    display: flex; gap: 0.5rem; margin-top:1rem;
+  }
+  .chat-input {
+    flex:1; padding: 0.6rem 1rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 25px;
+    color: var(--text);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  .chat-input:focus { border-color: var(--cyan); }
+  .chat-send {
+    padding: 0.6rem 1.2rem;
+    background: linear-gradient(135deg, var(--cyan), var(--violet));
+    border: none; border-radius: 25px;
+    color: #020212; font-weight: 800;
+    cursor: pointer; font-size: 1rem;
+    transition: transform 0.2s;
+  }
+  .chat-send:hover { transform: scale(1.1); }
+
+  /* ─── HOW IT WORKS ─── */
+  .steps { display:grid; grid-template-columns: repeat(4,1fr); gap:2rem; position:relative; }
+  .steps::before {
+    content:'';
+    position:absolute; top:40px; right:12%; left:12%;
+    height:2px;
+    background: linear-gradient(90deg, var(--cyan), var(--violet), var(--pink));
+    z-index:0;
+  }
+
+  .step {
+    text-align:center; position:relative; z-index:1;
+  }
+  .step-num {
+    width:80px; height:80px; border-radius:50%;
+    background: var(--bg2);
+    border: 2px solid var(--cyan);
+    display:flex; align-items:center; justify-content:center;
+    margin: 0 auto 1.5rem;
+    font-size:1.8rem;
+    font-family:'Orbitron',monospace;
+    font-weight:900;
+    color:var(--cyan);
+    box-shadow: var(--glow-cyan);
+    transition: transform 0.3s;
+  }
+  .step:hover .step-num { transform: scale(1.15) rotate(5deg); }
+  .step-title { font-size:1rem; font-weight:800; margin-bottom:0.5rem; }
+  .step-desc { font-size:0.82rem; color:var(--muted); line-height:1.6; }
+
+  /* ─── LANGUAGES ─── */
+  .langs-scroll {
+    display: flex; gap: 0.75rem;
+    overflow-x: auto; padding: 1rem 0;
+    scrollbar-width: none;
+    flex-wrap: wrap; justify-content: center;
+  }
+  .lang-chip {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 25px; white-space: nowrap;
+    font-size: 0.82rem; cursor: pointer;
+    transition: all 0.3s;
+  }
+  .lang-chip:hover { border-color: var(--gold); color: var(--gold); }
+  .lang-chip .flag { font-size: 1.1rem; }
+
+  /* ─── TESTIMONIALS ─── */
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  .testi-card {
+    padding: 1.75rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    transition: all 0.3s;
+  }
+  .testi-card:hover { transform: translateY(-5px); border-color: var(--violet); }
+  .testi-stars { color: var(--gold); font-size: 0.9rem; margin-bottom: 1rem; letter-spacing:2px; }
+  .testi-text { font-size: 0.9rem; line-height: 1.8; color: var(--muted); margin-bottom: 1.25rem; font-style: italic; }
+  .testi-author { display:flex; align-items:center; gap:0.75rem; }
+  .testi-avatar { width:40px; height:40px; border-radius:50%; font-size:1.2rem; display:flex; align-items:center; justify-content:center; }
+  .testi-name { font-weight: 800; font-size: 0.9rem; }
+  .testi-role { font-size: 0.75rem; color: var(--muted); }
+
+  /* ─── PRICING ─── */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 1.5rem;
+    max-width: 1000px; margin: 0 auto;
+  }
+  .price-card {
+    padding: 2.5rem 2rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    text-align: center;
+    transition: all 0.3s;
+    position: relative; overflow: hidden;
+  }
+  .price-card.featured {
+    border-color: var(--cyan);
+    box-shadow: var(--glow-cyan);
+    background: rgba(0,245,255,0.05);
+  }
+  .price-card.featured::before {
+    content:'⭐ الأشهر';
+    position:absolute; top:1rem; right:50%; transform:translateX(50%);
+    background: linear-gradient(135deg,var(--cyan),var(--violet));
+    color:#020212; font-weight:800; font-size:0.75rem;
+    padding:0.3rem 1rem; border-radius:20px;
+  }
+  .price-card:hover { transform: translateY(-8px); }
+  .price-name { font-size:0.85rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:2px; margin-bottom:1rem; }
+  .price-amount { font-family:'Orbitron',monospace; font-size:3rem; font-weight:900; }
+  .price-amount span { font-size:1rem; color:var(--muted); }
+  .price-period { font-size:0.8rem; color:var(--muted); margin-bottom:2rem; }
+  .price-features { list-style:none; margin-bottom:2rem; text-align:right; }
+  .price-features li { padding:0.5rem 0; font-size:0.85rem; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:0.5rem; }
+  .price-features li::before { content:'✓'; color:var(--green); font-weight:900; }
+
+  /* ─── CTA ─── */
+  .cta-section {
+    position: relative; z-index:1;
+    text-align: center;
+    padding: 8rem 2rem;
+    background: linear-gradient(135deg, rgba(0,245,255,0.05), rgba(255,45,120,0.05));
+    border-top: 1px solid var(--border);
+  }
+  .cta-title { font-size: clamp(2rem,5vw,3.5rem); font-weight:900; margin-bottom:1rem; line-height:1.2; }
+  .cta-title .highlight { color: var(--cyan); text-shadow: var(--glow-cyan); }
+  .cta-sub { color:var(--muted); font-size:1.1rem; max-width:550px; margin:0 auto 2.5rem; line-height:1.7; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    position:relative; z-index:1;
+    background: rgba(0,0,0,0.4);
+    border-top: 1px solid var(--border);
+    padding: 3rem 3rem 2rem;
+  }
+  .footer-grid {
+    display:grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap:3rem; max-width:1200px; margin:0 auto;
+  }
+  .footer-brand .nav-logo { font-size:1.2rem; }
+  .footer-desc { color:var(--muted); font-size:0.85rem; line-height:1.7; margin: 1rem 0; }
+  .footer-socials { display:flex; gap:0.75rem; margin-top:1rem; }
+  .social-btn { width:35px; height:35px; border-radius:50%; background:var(--card); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.3s; font-size:0.9rem; }
+  .social-btn:hover { border-color:var(--cyan); background:rgba(0,245,255,0.1); }
+  .footer-col h4 { font-size:0.85rem; font-weight:800; text-transform:uppercase; letter-spacing:2px; color:var(--muted); margin-bottom:1.5rem; }
+  .footer-links { list-style:none; }
+  .footer-links li { margin-bottom:0.75rem; }
+  .footer-links a { color:var(--muted); text-decoration:none; font-size:0.85rem; transition:color 0.3s; }
+  .footer-links a:hover { color:var(--cyan); }
+  .footer-bottom { max-width:1200px; margin: 2rem auto 0; padding-top:1.5rem; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+  .footer-bottom p { font-size:0.8rem; color:var(--muted); }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeInDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeInUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+
+  .reveal { opacity:0; transform:translateY(30px); transition: all 0.7s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+
+  /* ─── SCROLL BAR ─── */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--violet); border-radius:3px; }
+
+  /* ─── RESPONSIVE ─── */
+  @media(max-width:900px) {
+    nav { padding: 1rem; }
+    .nav-links { display:none; }
+    .stats-band { grid-template-columns: repeat(2,1fr); }
+    .ai-inner { grid-template-columns:1fr; }
+    .ai-visual { display:none; }
+    .steps { grid-template-columns: repeat(2,1fr); }
+    .steps::before { display:none; }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .footer-brand { grid-column: 1/-1; }
+  }
+  @media(max-width:600px) {
+    .stats-band { grid-template-columns: repeat(2,1fr); }
+    .steps { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+<div class="aurora">
+  <div class="aurora-blob ab1"></div>
+  <div class="aurora-blob ab2"></div>
+  <div class="aurora-blob ab3"></div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">LEARNVERSE</div>
+  <ul class="nav-links">
+    <li><a href="#subjects">المواد</a></li>
+    <li><a href="#features">المميزات</a></li>
+    <li><a href="#ai-tutor">مدرس AI</a></li>
+    <li><a href="#pricing">الأسعار</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="lang-btn" onclick="cycleLang()">🌐 العربية</button>
+    <button class="btn-primary">ابدأ مجاناً</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="planet p1"></div>
+  <div class="planet p2"></div>
+  <div class="planet p3"></div>
+  <div class="planet p4"></div>
+
+  <div class="hero-badge">
+    <span class="dot"></span>
+    100 ميزة حصرية · يدعم 50+ لغة · مجاناً للأبد
+  </div>
+
+  <h1 class="hero-title">
+    كون المعرفة<br>
+    <span class="glow-text">اللامحدود</span>
+  </h1>
+
+  <p class="hero-sub">
+    تعلّم أي شيء، في أي وقت، من أي مكان في العالم.<br>
+    بمساعدة ذكاء اصطناعي متطور، دروس تفاعلية مذهلة، ومجتمع عالمي يضم ملايين المتعلمين.
+  </p>
+
+  <div class="hero-cta">
+    <button class="btn-hero">🚀 ابدأ رحلتك المجانية</button>
+    <button class="btn-ghost">🎥 شاهد كيف يعمل</button>
+  </div>
+
+  <!-- Search bar -->
+  <div style="width:100%;max-width:600px;position:relative;">
+    <input type="text" placeholder="🔍  ابحث عن أي موضوع، مهارة، أو دورة..." style="
+      width:100%; padding:1rem 1.5rem; border-radius:50px;
+      background:rgba(255,255,255,0.07); border:1px solid var(--border);
+      color:var(--text); font-family:'Tajawal',sans-serif; font-size:1rem;
+      outline:none; transition:border-color 0.3s;
+    " onfocus="this.style.borderColor='var(--cyan)'" onblur="this.style.borderColor='var(--border)'">
+    <button style="position:absolute;left:0.5rem;top:50%;transform:translateY(-50%);
+      background:linear-gradient(135deg,var(--cyan),var(--violet));border:none;
+      border-radius:25px;padding:0.5rem 1.25rem;color:#020212;font-weight:800;
+      font-family:'Tajawal',sans-serif;cursor:pointer;">بحث</button>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-band reveal">
+  <div class="stat-item">
+    <div class="stat-number" id="s1">0</div>
+    <div class="stat-label">🌍 متعلم حول العالم</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number" id="s2">0</div>
+    <div class="stat-label">📚 دورة تعليمية</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number" id="s3">0</div>
+    <div class="stat-label">🏆 شهادة مُمنوحة</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number" id="s4">0</div>
+    <div class="stat-label">🌐 لغة مدعومة</div>
+  </div>
+</div>
+
+<!-- SUBJECTS -->
+<section class="section" id="subjects">
+  <div class="reveal">
+    <h2 class="sec-title">استكشف <span>كل المجالات</span></h2>
+    <p class="sec-sub">من العلوم إلى الفنون، من الرياضيات إلى البرمجة — كل معرفة بشرية في مكان واحد</p>
+  </div>
+
+  <div class="subjects-grid reveal">
+    <div class="subject-card" style="--glow-color:#00f5ff">
+      <span class="icon">🔬</span>
+      <div class="name">العلوم</div>
+      <div class="count">1,240 درس</div>
+    </div>
+    <div class="subject-card" style="--glow-color:#ff2d78">
+      <span class="icon">🧮</span>
+      <div class="name">الرياضيات</div>
+      <div class="count">980 درس</div>
+    </div>
+    <div class="subject-card" style="--glow-color:#8b5cf6">
+      <span class="icon">💻</span>
+      <div class="name">البرمجة</div>
+      <div class="count">1,560 درس</div>
+    </div>
+    <div class="subject-card" style="--glow-color:#ffd700">
+      <span class="icon">🌍</span>
+      <div class="name">اللغات</div>
+      <div class="count">2,100 درس</div>
+    </div>
+    <div class="subject-card" style="--glow-color:#00ffaa">
+      <span class="icon">🎨</span>
+      <div class="name">الفنون</div>
+      <div class="count">760 درس</div>
+    </div>
+    <div class="subject-card" style="--glow-color:#f97316">
+      <span class="icon">📊</span>
+      <div class="name">الأعمال</div>
+      <div class="count">890 درس</div>
+    </div>
+    <div class="subject-card" style="--glow-color:#ec4899">
+      <span class="icon">🧠</span>
+      <div class="name">علم النفس</div>
+      <div class="count">450 درس</div>
+    </div>
+    <div class="subject-card" style="--glow-color:#14b8a6">
+      <span class="icon">🏛️</span>
+      <div class="name">التاريخ</div>
+      <div class="count">670 درس</div>
+    </div>
+    <div class="subject-card" style="--glow-color:#a855f7">
+      <span class="icon">🎵</span>
+      <div class="name">الموسيقى</div>
+      <div class="count">380 درس</div>
+    </div>
+    <div class="subject-card" style="--glow-color:#06b6d4">
+      <span class="icon">🤖</span>
+      <div class="name">الذكاء الاصطناعي</div>
+      <div class="count">920 درس</div>
+    </div>
+    <div class="subject-card" style="--glow-color:#84cc16">
+      <span class="icon">🌱</span>
+      <div class="name">البيئة</div>
+      <div class="count">290 درس</div>
+    </div>
+    <div class="subject-card" style="--glow-color:#fb923c">
+      <span class="icon">⚖️</span>
+      <div class="name">القانون</div>
+      <div class="count">510 درس</div>
+    </div>
+    <div class="subject-card" style="--glow-color:#f43f5e">
+      <span class="icon">💊</span>
+      <div class="name">الطب</div>
+      <div class="count">1,100 درس</div>
+    </div>
+    <div class="subject-card" style="--glow-color:#0ea5e9">
+      <span class="icon">🚀</span>
+      <div class="name">الفضاء</div>
+      <div class="count">340 درس</div>
+    </div>
+    <div class="subject-card" style="--glow-color:#d946ef">
+      <span class="icon">📷</span>
+      <div class="name">التصوير</div>
+      <div class="count">420 درس</div>
+    </div>
+    <div class="subject-card" style="--glow-color:#22d3ee">
+      <span class="icon">💡</span>
+      <div class="name">الفلسفة</div>
+      <div class="count">280 درس</div>
+    </div>
+  </div>
+</section>
+
+<!-- COURSES -->
+<section class="section">
+  <div class="reveal">
+    <h2 class="sec-title">الدورات <span>الأكثر شعبية</span></h2>
+    <p class="sec-sub">آلاف الدورات المصممة من قِبل خبراء عالميين</p>
+  </div>
+  <div class="courses-grid reveal">
+    <div class="course-card">
+      <div class="course-thumb" style="background: linear-gradient(135deg,#0f0c29,#302b63,#24243e)">🤖</div>
+      <div class="course-body">
+        <span class="course-tag" style="background:rgba(0,245,255,0.15);color:var(--cyan)">الذكاء الاصطناعي</span>
+        <div class="course-title">تعلم الذكاء الاصطناعي من الصفر إلى الاحتراف</div>
+        <div class="course-meta">
+          <span class="course-rating">★★★★★</span>
+          <span>4.9 (12,400)</span>
+          <span>48 ساعة</span>
+        </div>
+        <div class="course-progress"><div class="course-progress-fill" style="width:73%"></div></div>
+      </div>
+    </div>
+    <div class="course-card">
+      <div class="course-thumb" style="background: linear-gradient(135deg,#0a0a0a,#1a1a2e,#16213e)">💻</div>
+      <div class="course-body">
+        <span class="course-tag" style="background:rgba(139,92,246,0.15);color:var(--violet)">برمجة</span>
+        <div class="course-title">فول ستاك - من HTML إلى تطبيقات كاملة</div>
+        <div class="course-meta">
+          <span class="course-rating">★★★★★</span>
+          <span>4.8 (9,200)</span>
+          <span>60 ساعة</span>
+        </div>
+        <div class="course-progress"><div class="course-progress-fill" style="width:45%"></div></div>
+      </div>
+    </div>
+    <div class="course-card">
+      <div class="course-thumb" style="background: linear-gradient(135deg,#0d1117,#1e3a5f,#0d2137)">📊</div>
+      <div class="course-body">
+        <span class="course-tag" style="background:rgba(255,215,0,0.15);color:var(--gold)">أعمال</span>
+        <div class="course-title">إدارة الأعمال وريادة الشركات الناشئة</div>
+        <div class="course-meta">
+          <span class="course-rating">★★★★☆</span>
+          <span>4.7 (7,850)</span>
+          <span>36 ساعة</span>
+        </div>
+        <div class="course-progress"><div class="course-progress-fill" style="width:60%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <div class="reveal">
+    <h2 class="sec-title">كيف <span>يعمل؟</span></h2>
+    <p class="sec-sub">أربع خطوات بسيطة تغيّر حياتك إلى الأبد</p>
+  </div>
+  <div class="steps reveal">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-title">سجّل مجاناً</div>
+      <div class="step-desc">أنشئ حسابك في 30 ثانية بدون بطاقة بنكية</div>
+    </div>
+    <div class="step">
+      <div class="step-num" style="border-color:var(--violet);color:var(--violet);box-shadow:var(--glow-violet)">02</div>
+      <div class="step-title">اختر مجالك</div>
+      <div class="step-desc">يحدد AI مستواك ويبني خطة تعلم شخصية لك</div>
+    </div>
+    <div class="step">
+      <div class="step-num" style="border-color:var(--pink);color:var(--pink);box-shadow:var(--glow-pink)">03</div>
+      <div class="step-title">تعلّم بأسلوبك</div>
+      <div class="step-desc">فيديو، صوت، نصوص، ألعاب — اختر ما يناسبك</div>
+    </div>
+    <div class="step">
+      <div class="step-num" style="border-color:var(--gold);color:var(--gold);box-shadow:0 0 30px rgba(255,215,0,0.4)">04</div>
+      <div class="step-title">احصل شهادتك</div>
+      <div class="step-desc">شهادات معترف بها دولياً تفتح آفاقاً لا حدود لها</div>
+    </div>
+  </div>
+</section>
+
+<!-- AI TUTOR -->
+<div class="ai-section" id="ai-tutor">
+  <div class="ai-inner">
+    <div class="ai-visual reveal">
+      <div class="ai-orb">
+        <span>🧠</span>
+        <div class="orb-ring ring1"></div>
+        <div class="orb-ring ring2"></div>
+        <div class="orb-ring ring3"></div>
+      </div>
+    </div>
+    <div class="ai-content reveal">
+      <h2 class="sec-title">مدرسك الخاص <span>بالذكاء الاصطناعي</span></h2>
+      <p class="sec-sub">يفهم أسلوبك، يجيب على أسئلتك فوراً، ويشرح بألف طريقة حتى تفهم تماماً</p>
+      <div class="ai-chat-preview">
+        <div class="chat-msg">
+          <div class="chat-avatar ai-av">🤖</div>
+          <div class="chat-bubble">مرحباً! أنا مدرسك الذكي. ماذا تريد تتعلم اليوم؟ 😊</div>
+        </div>
+        <div class="chat-msg user">
+          <div class="chat-avatar user-av">👤</div>
+          <div class="chat-bubble">أريد فهم الـ Machine Learning بطريقة بسيطة</div>
+        </div>
+        <div class="chat-msg">
+          <div class="chat-avatar ai-av">🤖</div>
+          <div class="chat-bubble" id="aiTyping">تخيّل أنك تعلّم طفلاً التمييز بين القطط والكلاب... هكذا بالضبط يتعلم الحاسوب! ✨ هل تريد أمثلة عملية؟</div>
+        </div>
+        <div class="chat-input-row">
+          <input class="chat-input" type="text" placeholder="اسأل أي شيء..." id="chatInput">
+          <button class="chat-send" onclick="sendChat()">↑</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 100 FEATURES -->
+<section class="section" id="features">
+  <div class="reveal">
+    <h2 class="sec-title">١٠٠ ميزة <span>لا تجدها في أي مكان</span></h2>
+    <p class="sec-sub">كل ميزة مصممة بعناية فائقة لجعل تجربة التعلم لا تُنسى</p>
+  </div>
+
+  <div class="features-container reveal">
+
+    <!-- CAT 1: AI & Personalization -->
+    <div class="feature-category">
+      <div class="cat-header">
+        <span class="cat-icon">🤖</span>
+        <span class="cat-title">الذكاء الاصطناعي والتخصيص</span>
+        <span class="cat-badge">20 ميزة</span>
+      </div>
+      <div class="features-grid">
+        <div class="feature-pill" style="--pill-color:#00f5ff"><span class="f-icon">🧠</span><span class="f-name">مدرس ذكاء اصطناعي شخصي</span><span class="f-num">01</span></div>
+        <div class="feature-pill" style="--pill-color:#00f5ff"><span class="f-icon">📊</span><span class="f-name">خطة تعلم مخصصة</span><span class="f-num">02</span></div>
+        <div class="feature-pill" style="--pill-color:#00f5ff"><span class="f-icon">🎯</span><span class="f-name">تقييم المستوى الآلي</span><span class="f-num">03</span></div>
+        <div class="feature-pill" style="--pill-color:#00f5ff"><span class="f-icon">⚡</span><span class="f-name">التعلم التكيفي الذكي</span><span class="f-num">04</span></div>
+        <div class="feature-pill" style="--pill-color:#00f5ff"><span class="f-icon">💡</span><span class="f-name">اقتراح محتوى ذكي</span><span class="f-num">05</span></div>
+        <div class="feature-pill" style="--pill-color:#00f5ff"><span class="f-icon">🔮</span><span class="f-name">توقع نقاط الضعف</span><span class="f-num">06</span></div>
+        <div class="feature-pill" style="--pill-color:#00f5ff"><span class="f-icon">📝</span><span class="f-name">ملخصات AI تلقائية</span><span class="f-num">07</span></div>
+        <div class="feature-pill" style="--pill-color:#00f5ff"><span class="f-icon">🗣️</span><span class="f-name">مدرب نطق بالصوت</span><span class="f-num">08</span></div>
+        <div class="feature-pill" style="--pill-color:#00f5ff"><span class="f-icon">✏️</span><span class="f-name">تصحيح إنشاء فوري</span><span class="f-num">09</span></div>
+        <div class="feature-pill" style="--pill-color:#00f5ff"><span class="f-icon">🧩</span><span class="f-name">حل مسائل خطوة بخطوة</span><span class="f-num">10</span></div>
+        <div class="feature-pill" style="--pill-color:#00f5ff"><span class="f-icon">🔄</span><span class="f-name">تكرار ذكي للمراجعة</span><span class="f-num">11</span></div>
+        <div class="feature-pill" style="--pill-color:#00f5ff"><span class="f-icon">🌐</span><span class="f-name">ترجمة فورية 50+ لغة</span><span class="f-num">12</span></div>
+        <div class="feature-pill" style="--pill-color:#00f5ff"><span class="f-icon">📚</span><span class="f-name">ملخص PDFs في ثوانٍ</span><span class="f-num">13</span></div>
+        <div class="feature-pill" style="--pill-color:#00f5ff"><span class="f-icon">🎤</span><span class="f-name">أسئلة بالصوت</span><span class="f-num">14</span></div>
+        <div class="feature-pill" style="--pill-color:#00f5ff"><span class="f-icon">💬</span><span class="f-name">محادثة AI 24/7</span><span class="f-num">15</span></div>
+        <div class="feature-pill" style="--pill-color:#00f5ff"><span class="f-icon">📈</span><span class="f-name">تحليل أخطائي الذكي</span><span class="f-num">16</span></div>
+        <div class="feature-pill" style="--pill-color:#00f5ff"><span class="f-icon">🃏</span><span class="f-name">بطاقات تعلم AI</span><span class="f-num">17</span></div>
+        <div class="feature-pill" style="--pill-color:#00f5ff"><span class="f-icon">🖼️</span><span class="f-name">شرح الصور AI</span><span class="f-num">18</span></div>
+        <div class="feature-pill" style="--pill-color:#00f5ff"><span class="f-icon">🔍</span><span class="f-name">بحث دلالي ذكي</span><span class="f-num">19</span></div>
+        <div class="feature-pill" style="--pill-color:#00f5ff"><span class="f-icon">🎓</span><span class="f-name">مساعد اختبارات AI</span><span class="f-num">20</span></div>
+      </div>
+    </div>
+
+    <!-- CAT 2: Interactive Learning -->
+    <div class="feature-category">
+      <div class="cat-header">
+        <span class="cat-icon">🎮</span>
+        <span class="cat-title">التعلم التفاعلي والترفيهي</span>
+        <span class="cat-badge" style="background:rgba(255,45,120,0.1);border-color:rgba(255,45,120,0.2);color:var(--pink)">20 ميزة</span>
+      </div>
+      <div class="features-grid">
+        <div class="feature-pill" style="--pill-color:#ff2d78"><span class="f-icon">🏆</span><span class="f-name">نظام نقاط وتحديات</span><span class="f-num">21</span></div>
+        <div class="feature-pill" style="--pill-color:#ff2d78"><span class="f-icon">🔥</span><span class="f-name">سلسلة تعلم يومية</span><span class="f-num">22</span></div>
+        <div class="feature-pill" style="--pill-color:#ff2d78"><span class="f-icon">🥇</span><span class="f-name">لوح الصدارة العالمي</span><span class="f-num">23</span></div>
+        <div class="feature-pill" style="--pill-color:#ff2d78"><span class="f-icon">🎯</span><span class="f-name">تحديات يومية وأسبوعية</span><span class="f-num">24</span></div>
+        <div class="feature-pill" style="--pill-color:#ff2d78"><span class="f-icon">🧪</span><span class="f-name">مختبرات علوم افتراضية</span><span class="f-num">25</span></div>
+        <div class="feature-pill" style="--pill-color:#ff2d78"><span class="f-icon">♟️</span><span class="f-name">تدريب الشطرنج والمنطق</span><span class="f-num">26</span></div>
+        <div class="feature-pill" style="--pill-color:#ff2d78"><span class="f-icon">🧩</span><span class="f-name">ألعاب دماغية تعليمية</span><span class="f-num">27</span></div>
+        <div class="feature-pill" style="--pill-color:#ff2d78"><span class="f-icon">⚡</span><span class="f-name">رياضيات الفلاش السريعة</span><span class="f-num">28</span></div>
+        <div class="feature-pill" style="--pill-color:#ff2d78"><span class="f-icon">🗺️</span><span class="f-name">خرائط ذهنية تفاعلية</span><span class="f-num">29</span></div>
+        <div class="feature-pill" style="--pill-color:#ff2d78"><span class="f-icon">🎬</span><span class="f-name">فيديوهات تفاعلية مع أسئلة</span><span class="f-num">30</span></div>
+        <div class="feature-pill" style="--pill-color:#ff2d78"><span class="f-icon">🎲</span><span class="f-name">مسابقات مباشرة مع العالم</span><span class="f-num">31</span></div>
+        <div class="feature-pill" style="--pill-color:#ff2d78"><span class="f-icon">🌍</span><span class="f-name">استكشاف الجغرافيا التفاعلي</span><span class="f-num">32</span></div>
+        <div class="feature-pill" style="--pill-color:#ff2d78"><span class="f-icon">⏱️</span><span class="f-name">مؤقت بومودورو الذكي</span><span class="f-num">33</span></div>
+        <div class="feature-pill" style="--pill-color:#ff2d78"><span class="f-icon">🃏</span><span class="f-name">بطاقات مراجعة سريعة</span><span class="f-num">34</span></div>
+        <div class="feature-pill" style="--pill-color:#ff2d78"><span class="f-icon">📖</span><span class="f-name">مدرب سرعة القراءة</span><span class="f-num">35</span></div>
+        <div class="feature-pill" style="--pill-color:#ff2d78"><span class="f-icon">🎭</span><span class="f-name">محاكاة مواقف حقيقية</span><span class="f-num">36</span></div>
+        <div class="feature-pill" style="--pill-color:#ff2d78"><span class="f-icon">🏅</span><span class="f-name">شارات الإنجاز</span><span class="f-num">37</span></div>
+        <div class="feature-pill" style="--pill-color:#ff2d78"><span class="f-icon">🎁</span><span class="f-name">مكافآت التعلم المستمر</span><span class="f-num">38</span></div>
+        <div class="feature-pill" style="--pill-color:#ff2d78"><span class="f-icon">🕹️</span><span class="f-name">ألعاب تعليم اللغات</span><span class="f-num">39</span></div>
+        <div class="feature-pill" style="--pill-color:#ff2d78"><span class="f-icon">🧠</span><span class="f-name">قصر الذاكرة الافتراضي</span><span class="f-num">40</span></div>
+      </div>
+    </div>
+
+    <!-- CAT 3: Social & Community -->
+    <div class="feature-category">
+      <div class="cat-header">
+        <span class="cat-icon">👥</span>
+        <span class="cat-title">المجتمع والتعلم الاجتماعي</span>
+        <span class="cat-badge" style="background:rgba(139,92,246,0.1);border-color:rgba(139,92,246,0.2);color:var(--violet)">15 ميزة</span>
+      </div>
+      <div class="features-grid">
+        <div class="feature-pill" style="--pill-color:#8b5cf6"><span class="f-icon">👥</span><span class="f-name">مجموعات دراسية</span><span class="f-num">41</span></div>
+        <div class="feature-pill" style="--pill-color:#8b5cf6"><span class="f-icon">🤝</span><span class="f-name">تبادل لغوي عالمي</span><span class="f-num">42</span></div>
+        <div class="feature-pill" style="--pill-color:#8b5cf6"><span class="f-icon">👨‍🏫</span><span class="f-name">إرشاد من خبراء</span><span class="f-num">43</span></div>
+        <div class="feature-pill" style="--pill-color:#8b5cf6"><span class="f-icon">💬</span><span class="f-name">منتدى نقاش حي</span><span class="f-num">44</span></div>
+        <div class="feature-pill" style="--pill-color:#8b5cf6"><span class="f-icon">📹</span><span class="f-name">جلسات Q&A مباشرة</span><span class="f-num">45</span></div>
+        <div class="feature-pill" style="--pill-color:#8b5cf6"><span class="f-icon">⭐</span><span class="f-name">مراجعة أعمال الزملاء</span><span class="f-num">46</span></div>
+        <div class="feature-pill" style="--pill-color:#8b5cf6"><span class="f-icon">🎙️</span><span class="f-name">بودكاست مجتمعي</span><span class="f-num">47</span></div>
+        <div class="feature-pill" style="--pill-color:#8b5cf6"><span class="f-icon">🔗</span><span class="f-name">مشاركة التقدم</span><span class="f-num">48</span></div>
+        <div class="feature-pill" style="--pill-color:#8b5cf6"><span class="f-icon">📣</span><span class="f-name">لوحة إعلانات المجتمع</span><span class="f-num">49</span></div>
+        <div class="feature-pill" style="--pill-color:#8b5cf6"><span class="f-icon">🏫</span><span class="f-name">فصول دراسية افتراضية</span><span class="f-num">50</span></div>
+        <div class="feature-pill" style="--pill-color:#8b5cf6"><span class="f-icon">🖥️</span><span class="f-name">مشاركة الشاشة</span><span class="f-num">51</span></div>
+        <div class="feature-pill" style="--pill-color:#8b5cf6"><span class="f-icon">✏️</span><span class="f-name">سبورة تعاونية</span><span class="f-num">52</span></div>
+        <div class="feature-pill" style="--pill-color:#8b5cf6"><span class="f-icon">🌟</span><span class="f-name">تقدير المتميزين</span><span class="f-num">53</span></div>
+        <div class="feature-pill" style="--pill-color:#8b5cf6"><span class="f-icon">🤲</span><span class="f-name">برنامج التطوع التعليمي</span><span class="f-num">54</span></div>
+        <div class="feature-pill" style="--pill-color:#8b5cf6"><span class="f-icon">🌐</span><span class="f-name">شبكة خريجين عالمية</span><span class="f-num">55</span></div>
+      </div>
+    </div>
+
+    <!-- CAT 4: Content & Resources -->
+    <div class="feature-category">
+      <div class="cat-header">
+        <span class="cat-icon">📚</span>
+        <span class="cat-title">المحتوى والموارد</span>
+        <span class="cat-badge" style="background:rgba(255,215,0,0.1);border-color:rgba(255,215,0,0.2);color:var(--gold)">15 ميزة</span>
+      </div>
+      <div class="features-grid">
+        <div class="feature-pill" style="--pill-color:#ffd700"><span class="f-icon">📕</span><span class="f-name">مكتبة إلكترونية ضخمة</span><span class="f-num">56</span></div>
+        <div class="feature-pill" style="--pill-color:#ffd700"><span class="f-icon">🎧</span><span class="f-name">كتب صوتية</span><span class="f-num">57</span></div>
+        <div class="feature-pill" style="--pill-color:#ffd700"><span class="f-icon">🎙️</span><span class="f-name">بودكاست تعليمي</span><span class="f-num">58</span></div>
+        <div class="feature-pill" style="--pill-color:#ffd700"><span class="f-icon">📄</span><span class="f-name">أبحاث علمية مجانية</span><span class="f-num">59</span></div>
+        <div class="feature-pill" style="--pill-color:#ffd700"><span class="f-icon">📰</span><span class="f-name">ملخصات الأخبار يومياً</span><span class="f-num">60</span></div>
+        <div class="feature-pill" style="--pill-color:#ffd700"><span class="f-icon">🎞️</span><span class="f-name">وثائقيات تعليمية</span><span class="f-num">61</span></div>
+        <div class="feature-pill" style="--pill-color:#ffd700"><span class="f-icon">🔴</span><span class="f-name">محاضرات TED مترجمة</span><span class="f-num">62</span></div>
+        <div class="feature-pill" style="--pill-color:#ffd700"><span class="f-icon">🎬</span><span class="f-name">تكامل YouTube تعليمي</span><span class="f-num">63</span></div>
+        <div class="feature-pill" style="--pill-color:#ffd700"><span class="f-icon">📖</span><span class="f-name">قاموس موسوعي شامل</span><span class="f-num">64</span></div>
+        <div class="feature-pill" style="--pill-color:#ffd700"><span class="f-icon">📎</span><span class="f-name">مولد المراجع والاستشهادات</span><span class="f-num">65</span></div>
+        <div class="feature-pill" style="--pill-color:#ffd700"><span class="f-icon">✅</span><span class="f-name">كاشف الانتحال</span><span class="f-num">66</span></div>
+        <div class="feature-pill" style="--pill-color:#ffd700"><span class="f-icon">✍️</span><span class="f-name">مصحح قواعد اللغة</span><span class="f-num">67</span></div>
+        <div class="feature-pill" style="--pill-color:#ffd700"><span class="f-icon">🗺️</span><span class="f-name">خرائط ثقافات العالم</span><span class="f-num">68</span></div>
+        <div class="feature-pill" style="--pill-color:#ffd700"><span class="f-icon">🔢</span><span class="f-name">حل معادلات رياضية</span><span class="f-num">69</span></div>
+        <div class="feature-pill" style="--pill-color:#ffd700"><span class="f-icon">💻</span><span class="f-name">بيئة كود تفاعلية</span><span class="f-num">70</span></div>
+      </div>
+    </div>
+
+    <!-- CAT 5: Career & Growth -->
+    <div class="feature-category">
+      <div class="cat-header">
+        <span class="cat-icon">🚀</span>
+        <span class="cat-title">المهنة والنمو الشخصي</span>
+        <span class="cat-badge" style="background:rgba(0,255,170,0.1);border-color:rgba(0,255,170,0.2);color:var(--green)">15 ميزة</span>
+      </div>
+      <div class="features-grid">
+        <div class="feature-pill" style="--pill-color:#00ffaa"><span class="f-icon">🛤️</span><span class="f-name">مسارات مهنية واضحة</span><span class="f-num">71</span></div>
+        <div class="feature-pill" style="--pill-color:#00ffaa"><span class="f-icon">💼</span><span class="f-name">لوحة وظائف حصرية</span><span class="f-num">72</span></div>
+        <div class="feature-pill" style="--pill-color:#00ffaa"><span class="f-icon">🗂️</span><span class="f-name">بنّاء ملف أعمال احترافي</span><span class="f-num">73</span></div>
+        <div class="feature-pill" style="--pill-color:#00ffaa"><span class="f-icon">📊</span><span class="f-name">تقييم المهارات الفعلية</span><span class="f-num">74</span></div>
+        <div class="feature-pill" style="--pill-color:#00ffaa"><span class="f-icon">🎓</span><span class="f-name">شهادات معترف بها دولياً</span><span class="f-num">75</span></div>
+        <div class="feature-pill" style="--pill-color:#00ffaa"><span class="f-icon">🧭</span><span class="f-name">اختبار الشخصية المهنية</span><span class="f-num">76</span></div>
+        <div class="feature-pill" style="--pill-color:#00ffaa"><span class="f-icon">🎯</span><span class="f-name">أهداف SMART مع تتبع</span><span class="f-num">77</span></div>
+        <div class="feature-pill" style="--pill-color:#00ffaa"><span class="f-icon">📅</span><span class="f-name">تتبع العادات اليومية</span><span class="f-num">78</span></div>
+        <div class="feature-pill" style="--pill-color:#00ffaa"><span class="f-icon">🤝</span><span class="f-name">تواصل مع خبراء الصناعة</span><span class="f-num">79</span></div>
+        <div class="feature-pill" style="--pill-color:#00ffaa"><span class="f-icon">💡</span><span class="f-name">ورش عمل ريادة الأعمال</span><span class="f-num">80</span></div>
+        <div class="feature-pill" style="--pill-color:#00ffaa"><span class="f-icon">📈</span><span class="f-name">دورات المال والاستثمار</span><span class="f-num">81</span></div>
+        <div class="feature-pill" style="--pill-color:#00ffaa"><span class="f-icon">🧘</span><span class="f-name">مهارات التطوير الذاتي</span><span class="f-num">82</span></div>
+        <div class="feature-pill" style="--pill-color:#00ffaa"><span class="f-icon">🗣️</span><span class="f-name">تدريب فن الخطابة</span><span class="f-num">83</span></div>
+        <div class="feature-pill" style="--pill-color:#00ffaa"><span class="f-icon">⏳</span><span class="f-name">إدارة الوقت الذكية</span><span class="f-num">84</span></div>
+        <div class="feature-pill" style="--pill-color:#00ffaa"><span class="f-icon">🌟</span><span class="f-name">بناء العلامة الشخصية</span><span class="f-num">85</span></div>
+      </div>
+    </div>
+
+    <!-- CAT 6: Tech & Accessibility -->
+    <div class="feature-category">
+      <div class="cat-header">
+        <span class="cat-icon">⚙️</span>
+        <span class="cat-title">التقنية وإمكانية الوصول</span>
+        <span class="cat-badge" style="background:rgba(249,115,22,0.1);border-color:rgba(249,115,22,0.2);color:#fb923c">15 ميزة</span>
+      </div>
+      <div class="features-grid">
+        <div class="feature-pill" style="--pill-color:#fb923c"><span class="f-icon">📱</span><span class="f-name">تطبيق iOS و Android</span><span class="f-num">86</span></div>
+        <div class="feature-pill" style="--pill-color:#fb923c"><span class="f-icon">🔌</span><span class="f-name">وضع بدون إنترنت</span><span class="f-num">87</span></div>
+        <div class="feature-pill" style="--pill-color:#fb923c"><span class="f-icon">🥽</span><span class="f-name">فصول دراسية VR</span><span class="f-num">88</span></div>
+        <div class="feature-pill" style="--pill-color:#fb923c"><span class="f-icon">📦</span><span class="f-name">واقع معزز AR</span><span class="f-num">89</span></div>
+        <div class="feature-pill" style="--pill-color:#fb923c"><span class="f-icon">🌑</span><span class="f-name">وضع ليلي ونهاري</span><span class="f-num">90</span></div>
+        <div class="feature-pill" style="--pill-color:#fb923c"><span class="f-icon">♿</span><span class="f-name">دعم كامل لذوي الإعاقة</span><span class="f-num">91</span></div>
+        <div class="feature-pill" style="--pill-color:#fb923c"><span class="f-icon">🔔</span><span class="f-name">تذكيرات ذكية مخصصة</span><span class="f-num">92</span></div>
+        <div class="feature-pill" style="--pill-color:#fb923c"><span class="f-icon">📅</span><span class="f-name">تكامل التقويم</span><span class="f-num">93</span></div>
+        <div class="feature-pill" style="--pill-color:#fb923c"><span class="f-icon">📋</span><span class="f-name">تتبع الواجبات والمهام</span><span class="f-num">94</span></div>
+        <div class="feature-pill" style="--pill-color:#fb923c"><span class="f-icon">👨‍👩‍👧</span><span class="f-name">لوحة تحكم للوالدين</span><span class="f-num">95</span></div>
+        <div class="feature-pill" style="--pill-color:#fb923c"><span class="f-icon">🧑‍🏫</span><span class="f-name">أدوات المعلمين الاحترافية</span><span class="f-num">96</span></div>
+        <div class="feature-pill" style="--pill-color:#fb923c"><span class="f-icon">🏢</span><span class="f-name">خطط المؤسسات والشركات</span><span class="f-num">97</span></div>
+        <div class="feature-pill" style="--pill-color:#fb923c"><span class="f-icon">🔒</span><span class="f-name">خصوصية وحماية بيانات</span><span class="f-num">98</span></div>
+        <div class="feature-pill" style="--pill-color:#fb923c"><span class="f-icon">🌈</span><span class="f-name">دعم 50+ لغة عالمية</span><span class="f-num">99</span></div>
+        <div class="feature-pill" style="--pill-color:#ffd700; background:rgba(255,215,0,0.08); border-color:rgba(255,215,0,0.3)"><span class="f-icon">♾️</span><span class="f-name" style="color:var(--gold);font-weight:900">خطة مجانية للأبد</span><span class="f-num" style="color:var(--gold)">100</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- LANGUAGES -->
+<section class="section">
+  <div class="reveal">
+    <h2 class="sec-title">يدعم كل <span>لغات العالم</span></h2>
+    <p class="sec-sub">تعلّم بلغتك الأم أو تعلّم لغات جديدة — كلها في مكان واحد</p>
+  </div>
+  <div class="langs-scroll reveal">
+    <div class="lang-chip"><span class="flag">🇸🇦</span> العربية</div>
+    <div class="lang-chip"><span class="flag">🇬🇧</span> English</div>
+    <div class="lang-chip"><span class="flag">🇫🇷</span> Français</div>
+    <div class="lang-chip"><span class="flag">🇪🇸</span> Español</div>
+    <div class="lang-chip"><span class="flag">🇩🇪</span> Deutsch</div>
+    <div class="lang-chip"><span class="flag">🇨🇳</span> 中文</div>
+    <div class="lang-chip"><span class="flag">🇯🇵</span> 日本語</div>
+    <div class="lang-chip"><span class="flag">🇷🇺</span> Русский</div>
+    <div class="lang-chip"><span class="flag">🇰🇷</span> 한국어</div>
+    <div class="lang-chip"><span class="flag">🇮🇳</span> हिन्दी</div>
+    <div class="lang-chip"><span class="flag">🇧🇷</span> Português</div>
+    <div class="lang-chip"><span class="flag">🇹🇷</span> Türkçe</div>
+    <div class="lang-chip"><span class="flag">🇮🇷</span> فارسی</div>
+    <div class="lang-chip"><span class="flag">🇮🇩</span> Bahasa</div>
+    <div class="lang-chip"><span class="flag">🇮🇹</span> Italiano</div>
+    <div class="lang-chip"><span class="flag">🇵🇱</span> Polski</div>
+    <div class="lang-chip"><span class="flag">🇳🇱</span> Nederlands</div>
+    <div class="lang-chip"><span class="flag">🇸🇪</span> Svenska</div>
+    <div class="lang-chip"><span class="flag">🇻🇳</span> Tiếng Việt</div>
+    <div class="lang-chip"><span class="flag">🇵🇰</span> اردو</div>
+    <div class="lang-chip"><span class="flag">🌍</span> + 30 لغة أخرى</div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section">
+  <div class="reveal">
+    <h2 class="sec-title">يقول عنا <span>المتعلمون</span></h2>
+    <p class="sec-sub">ملايين الشهادات من حول العالم</p>
+  </div>
+  <div class="testimonials-grid reveal">
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"تعلمت البرمجة في 3 أشهر فقط وحصلت على وظيفة في شركة تقنية كبرى. المدرس الذكي غيّر حياتي!"</p>
+      <div class="testi-author">
+        <div class="testi-avatar" style="background:linear-gradient(135deg,var(--cyan),var(--violet))">👨</div>
+        <div><div class="testi-name">أحمد المصري</div><div class="testi-role">🇪🇬 مطور برمجيات</div></div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"أتقنت اللغة الفرنسية والإسبانية معاً! الألعاب التعليمية رائعة جداً، لا أشعر أنني أدرس."</p>
+      <div class="testi-author">
+        <div class="testi-avatar" style="background:linear-gradient(135deg,var(--pink),var(--violet))">👩</div>
+        <div><div class="testi-name">فاطمة الزهراء</div><div class="testi-role">🇲🇦 طالبة جامعية</div></div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"كمعلم، أستخدم المنصة مع طلابي. نتائج باهرة! الأدوات المقدمة للمدرسين لا مثيل لها."</p>
+      <div class="testi-author">
+        <div class="testi-avatar" style="background:linear-gradient(135deg,var(--gold),#f97316)">👨‍🏫</div>
+        <div><div class="testi-name">محمد العراقي</div><div class="testi-role">🇮🇶 معلم رياضيات</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section" id="pricing">
+  <div class="reveal">
+    <h2 class="sec-title">أسعار <span>للجميع</span></h2>
+    <p class="sec-sub">ابدأ مجاناً، ارتقِ متى شئت</p>
+  </div>
+  <div class="pricing-grid reveal">
+    <div class="price-card">
+      <div class="price-name">مجاني</div>
+      <div class="price-amount">$<span></span>0</div>
+      <div class="price-period">للأبد · بدون بطاقة</div>
+      <ul class="price-features">
+        <li>50 دورة مجانية</li>
+        <li>مدرس AI أساسي</li>
+        <li>شارات وإنجازات</li>
+        <li>تطبيق الهاتف</li>
+        <li>الوصول للمجتمع</li>
+      </ul>
+      <button class="btn-ghost" style="width:100%">ابدأ مجاناً</button>
+    </div>
+    <div class="price-card featured" style="padding-top:3.5rem">
+      <div class="price-name">برو</div>
+      <div class="price-amount" style="background:linear-gradient(135deg,var(--cyan),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent">$<span style="-webkit-text-fill-color:var(--muted)"></span>12</div>
+      <div class="price-period">شهرياً · ادفع سنوياً</div>
+      <ul class="price-features">
+        <li>كل الدورات بلا حدود</li>
+        <li>مدرس AI متقدم</li>
+        <li>شهادات معتمدة</li>
+        <li>وضع أوفلاين</li>
+        <li>AR & VR تجارب</li>
+        <li>تحليلات تعلم متقدمة</li>
+      </ul>
+      <button class="btn-hero" style="width:100%">ابدأ تجربة مجانية</button>
+    </div>
+    <div class="price-card">
+      <div class="price-name">مؤسسات</div>
+      <div class="price-amount">$<span></span>49</div>
+      <div class="price-period">شهرياً لكل مجموعة</div>
+      <ul class="price-features">
+        <li>كل مميزات برو</li>
+        <li>لوحة تحكم إدارية</li>
+        <li>تقارير مخصصة</li>
+        <li>دعم مخصص 24/7</li>
+        <li>مناهج خاصة</li>
+      </ul>
+      <button class="btn-ghost" style="width:100%;border-color:var(--gold);color:var(--gold)">تواصل معنا</button>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div style="font-size:3rem;margin-bottom:1rem">🚀</div>
+  <h2 class="cta-title">ابدأ رحلة التعلم<br><span class="highlight">الآن مجاناً</span></h2>
+  <p class="cta-sub">انضم لأكثر من 50 مليون متعلم حول العالم. لا بطاقة بنكية، لا التزامات.</p>
+  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+    <button class="btn-hero" style="font-size:1.1rem;padding:1rem 3rem">🎓 سجّل الآن — مجاناً</button>
+    <button class="btn-ghost" style="font-size:1.1rem;padding:1rem 3rem">📱 حمّل التطبيق</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="nav-logo" style="font-size:1.4rem">LEARNVERSE</div>
+      <p class="footer-desc">كون المعرفة اللامحدود — تعلّم أي شيء في أي وقت بمساعدة ذكاء اصطناعي متطور ومجتمع عالمي من المتعلمين.</p>
+      <div class="footer-socials">
+        <div class="social-btn">𝕏</div>
+        <div class="social-btn">in</div>
+        <div class="social-btn">📘</div>
+        <div class="social-btn">📸</div>
+        <div class="social-btn">▶️</div>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>المنصة</h4>
+      <ul class="footer-links">
+        <li><a href="#">الدورات</a></li>
+        <li><a href="#">المدرس AI</a></li>
+        <li><a href="#">الشهادات</a></li>
+        <li><a href="#">للمعلمين</a></li>
+        <li><a href="#">للمؤسسات</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>المجتمع</h4>
+      <ul class="footer-links">
+        <li><a href="#">المنتدى</a></li>
+        <li><a href="#">المجموعات</a></li>
+        <li><a href="#">الأحداث</a></li>
+        <li><a href="#">المدونة</a></li>
+        <li><a href="#">نشرة بريدية</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>الشركة</h4>
+      <ul class="footer-links">
+        <li><a href="#">من نحن</a></li>
+        <li><a href="#">وظائف</a></li>
+        <li><a href="#">الخصوصية</a></li>
+        <li><a href="#">الشروط</a></li>
+        <li><a href="#">تواصل معنا</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 LearnVerse — جميع الحقوق محفوظة</p>
+    <p style="color:var(--cyan)">صُنع بـ ❤️ للعالم أجمع</p>
+  </div>
+</footer>
+
+<script>
+// ─── STARFIELD ───
+const canvas = document.getElementById('starfield');
+const ctx = canvas.getContext('2d');
+let stars = [];
+let W, H;
+
+function resizeCanvas() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+for(let i=0;i<200;i++) {
+  stars.push({
+    x: Math.random()*2000, y: Math.random()*1200,
+    r: Math.random()*1.5+0.2,
+    a: Math.random(),
+    s: Math.random()*0.003+0.001,
+    px: Math.random()*2000, py: Math.random()*1200
+  });
+}
+
+function drawStars() {
+  ctx.clearRect(0,0,W,H);
+  stars.forEach(s => {
+    s.a += s.s;
+    if(s.a>1) s.s=-Math.abs(s.s);
+    if(s.a<0) s.s=Math.abs(s.s);
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fillStyle = `rgba(255,255,255,${s.a*0.7})`;
+    ctx.fill();
+  });
+  requestAnimationFrame(drawStars);
+}
+drawStars();
+
+// ─── STAT COUNTERS ───
+const targets = [
+  {id:'s1', val:50000000, suffix:'M', div:1000000, dec:0},
+  {id:'s2', val:15000, suffix:'K', div:1000, dec:0},
+  {id:'s3', val:8000000, suffix:'M', div:1000000, dec:0},
+  {id:'s4', val:50, suffix:'+', div:1, dec:0}
+];
+
+function animateCounter(el, target, suffix, div, dec) {
+  let start = 0;
+  const duration = 2500;
+  const startTime = performance.now();
+  function update(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed/duration, 1);
+    const eased = 1 - Math.pow(1-progress, 3);
+    const val = eased * (target/div);
+    el.textContent = (dec > 0 ? val.toFixed(dec) : Math.floor(val)) + suffix;
+    if(progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+// ─── SCROLL REVEAL ───
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      e.target.classList.add('visible');
+      // trigger counters
+      if(e.target.classList.contains('stats-band')) {
+        targets.forEach(t => {
+          const el = document.getElementById(t.id);
+          if(el) animateCounter(el, t.val, t.suffix, t.div, t.dec);
+        });
+      }
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ─── LANG CYCLE ───
+const langs = [
+  {code:'ar', label:'🌐 العربية'},
+  {code:'en', label:'🌐 English'},
+  {code:'fr', label:'🌐 Français'},
+  {code:'es', label:'🌐 Español'}
+];
+let langIdx = 0;
+function cycleLang() {
+  langIdx = (langIdx+1) % langs.length;
+  document.querySelector('.lang-btn').textContent = langs[langIdx].label;
+}
+
+// ─── CHAT INTERACTION ───
+const responses = [
+  "سؤال رائع! دعني أشرح لك ذلك بطريقة بسيطة جداً... 🎯",
+  "بالطبع! هذا الموضوع مثير للاهتمام. إليك الشرح الكامل... 🚀",
+  "ممتاز! أرى أنك تتقدم بسرعة. هل تريد تمارين إضافية؟ 💪",
+  "سؤال ذكي جداً! كثير من المتعلمين يتساءلون عن نفس الشيء... 🧠",
+  "أحسنت! دعنا ننتقل للمستوى التالي الآن! ✨"
+];
+let rIdx = 0;
+
+function sendChat() {
+  const input = document.getElementById('chatInput');
+  const typing = document.getElementById('aiTyping');
+  if(!input.value.trim()) return;
+  input.value = '';
+  typing.textContent = '...';
+  setTimeout(() => {
+    typing.textContent = responses[rIdx % responses.length];
+    rIdx++;
+  }, 800);
+}
+
+document.getElementById('chatInput').addEventListener('keydown', e => {
+  if(e.key === 'Enter') sendChat();
+});
+
+// ─── SMOOTH HOVER GLOW ───
+document.querySelectorAll('.subject-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    card.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.06), var(--card) 60%)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.background = 'var(--card)';
+  });
+});
+</script>
+</body>
+</html>
